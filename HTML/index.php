@@ -1,2 +1,3 @@
 <?php
-echo "lol";
+echo "lol 432432432423432";
+echo "testtttt";
