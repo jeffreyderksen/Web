@@ -1,3 +1,10 @@
 <?php
-echo "lol 432432432423432";
-echo "testtttt";
+
+echo '
+<html>
+<head>
+</head>
+<body>
+	<p>Test</p>
+</body>
+</html>';
