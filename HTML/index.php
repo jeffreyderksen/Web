@@ -5,6 +5,6 @@ echo '
 <head>
 </head>
 <body>
-	<p>Test</p>
+	<p>Testty</p>
 </body>
 </html>';
