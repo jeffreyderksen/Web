@@ -1,1 +1,39 @@
-@CHARSET "ISO-8859-1";
+body
+{
+	font-family: Verdana;
+}
+h1
+{
+	text-align: center;
+	background: rgb(100,255,0);
+	color: rgb(0,0,255);
+}
+#layout
+{
+	margin: 0 auto;
+	width: 900px;
+}
+#content
+{
+	background: rgb(90,90,90);
+}
+#menu
+{
+	display: block;
+	
+}
+#menu ul
+{
+	display: inline;
+	list-style: none;
+}
+#menu ul li
+{
+	display: inline;
+}
+#menu ul li a
+{
+	color: white;
+	background: black;
+	text-decoration: none;
+}
