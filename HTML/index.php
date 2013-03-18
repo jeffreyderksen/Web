@@ -1,12 +1,10 @@
 <?php
 include_once('framework.class.php');
-include_once('../include/database_handler.class.php');
 
-$framework = new FrameWork();
-$databaseHandler = new DataBaseHandler('localhost', 'guest', '12345', 'gametriangle');
+$framework = new FrameWork("leeg");
 
-
-
-$framework->setContent("Testt");
+$content = $framework->getContent('home');
 
 echo $framework->display();
+
+//echo phpinfo();

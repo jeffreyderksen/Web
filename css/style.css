@@ -2,11 +2,13 @@ body
 {
 	font-family: Verdana;
 }
-h1
+#header
 {
 	text-align: center;
-	background: rgb(100,255,0);
-	color: rgb(0,0,255);
+}
+#footer
+{
+	text-align: center;
 }
 #layout
 {
@@ -15,7 +17,7 @@ h1
 }
 #content
 {
-	background: rgb(90,90,90);
+	
 }
 #menu
 {
@@ -30,6 +32,7 @@ h1
 #menu ul li
 {
 	display: inline;
+	padding-right: 10px;
 }
 #menu ul li a
 {
