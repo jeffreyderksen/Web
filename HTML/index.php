@@ -1,10 +1,18 @@
 <?php
 include_once('framework.class.php');
 
-$framework = new FrameWork("leeg");
+$framework = new FrameWork();
 
-$content = $framework->getContent('home');
+//menu sturing
+$page = $framework->getFormVariable('page');
+$content = $framework->getContent($page);
+
+//check login
+if($framework->getFormVariable('submitted'))
+{
+	$framework->login();
+}
 
 echo $framework->display();
 
-//echo phpinfo();
+//echo phpinfo();t
