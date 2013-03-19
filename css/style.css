@@ -1,42 +1,48 @@
-body
-{
-	font-family: Verdana;
+#body {
+	height: 100%;
+	width: 100%;
 }
-#header
-{
-	text-align: center;
-}
-#footer
-{
-	text-align: center;
-}
-#layout
-{
-	margin: 0 auto;
-	width: 900px;
-}
-#content
-{
+#container {
+	background-color:#5e6cd4;
+	width: 90%;
+	height: 90%;
+	margin: auto;
+	padding: 2%;
 	
 }
-#menu
-{
-	display: block;
+h1  {
+	font-family: "Eras Demi ITC", sans-serif;
+	font-size:30px;
+}
+#header {
+	min-width: 80%;
+	padding: 2%;
+	margin: auto;
+	background-color: #5dbce5;
+}
+#header h1{
+	margin: 0 0 0 10%;
+	font-family:"Eras Demi ITC",sans-serif;
+	font-size:30px;
 	
 }
-#menu ul
-{
-	display: inline;
-	list-style: none;
+#menu {
+	background-color: #000000;
+	width:80%;
+	height: 5%;
+	margin: auto;
 }
-#menu ul li
-{
-	display: inline;
-	padding-right: 10px;
+#menulist {
+	list-style-type: none;
+	
 }
-#menu ul li a
-{
-	color: white;
-	background: black;
-	text-decoration: none;
+#menulist li{
+	background-color: # ;
+	float:left;
+	padding: 1%;
+	margin: 1%;
+	ba
+}
+#login{
+	float: right;
 }
