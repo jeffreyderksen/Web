@@ -22,12 +22,25 @@ class DatabaseHandler
 		$this->connection->close();
 	}
 	
+	//SELECT
 	public function executeQuery($sqlQuery, $type)
 	{
 		//handle it...
-		return $content = $this->handleResult($this->connection->query($sqlQuery), $type);
+		return $this->handleResult($this->connection->query($sqlQuery), $type);
 	}
 	
+	//INSERT
+	public function updateQuery($sqlQuery)
+	{
+		
+	}
+	
+	/**
+	 * Haalt het mysqli_result(ResultSet) uit elkaar en verstuurd het terug in een String of Array.
+	 * @param umysqli_result $resultSet
+	 * @param Integer $type - 0 voor String, 1 voor array
+	 * @return String | array
+	 */
 	public function handleResult($resultSet, $type)
 	{	
 		//check voor 0 of 1
