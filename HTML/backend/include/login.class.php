@@ -1,16 +1,15 @@
 <?php
 class Login
 {
-	public function login()
+	public function tryLogin()
 	{
 		if(empty($_POST['username']))
 		{
-			return $this->content .= '<p>Username is empty!</p>';
+			return '<p>Username is empty!</p>';
 		}
-	
 		if(empty($_POST['password']))
 		{
-			return $this->content .= '<p>Password is empty!</p>';
+			return '<p>Password is empty!</p>';
 		}
 	
 		$username = trim($_POST['username']);
