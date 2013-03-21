@@ -1,22 +1,71 @@
 <?php
-include_once('../include/database_handler.class.php');
+include_once('include/database_handler.class.php');
 
 class FrameWorkBackend
 {
 	private $databaseHandler;
 	
-	private $content;
 	private $title;
 	private $cssFile;
 	private $header;
+	private $menu;
+	private $content;
 	private $footer;
 
 	//constructor
 	public function __construct()
 	{
-		//maak object voor de database handlerr
+		//maak object voor de database handler
 		$this->databaseHandler = new DataBaseHandler();
-		$this->databaseHandler->openConnection('localhost', 'root', '', 'gametriangle');
+		$this->databaseHandler->openConnection('localhost', 'test', 'test', 'gametriangle');
+	}
+	
+	public function setTitle($value)
+	{
+		$result = $this->databaseHandler->executePreparedQuery('title', $value);
+		$this->title = $result;
+	}
+	
+	public function cssFile($value)
+	{
+		$result = $this->databaseHandler->executePreparedQuery('css', $value);
+		$this->cssFile = $result;
+	}
+	
+	public function setHeader($value)
+	{
+		$result = $this->databaseHandler->executePreparedQuery('header', $value);
+		$this->header = $result;
+	}
+	
+	public function setMenu($value)
+	{
+		$query = 'SELECT page_type, menu_item FROM admin_menu';
+		$menuItems = $this->databaseHandler->executeQuery($query);
+		
+		$menu = '';
+		$menu .= '<ul>';
+		for($i = 0; $i < sizeof($menuItems['page_type']); $i++)
+		{
+			$menu .= '<li>';
+			$menu .= '<a href="?page='. strtolower($menuItems['page_type'][$i]). '">' . $menuItems['menu_item'][$i] . '</a>';
+			$menu .= '</li>';
+		}
+		$menu .= '</ul>';
+		
+		$this->menu = $menu;
+	}
+	
+	public function setContent($value)
+	{
+		$result = $this->databaseHandler->executePreparedQuery('content', $value);
+		$this->content = $result;
+	}
+	
+	public function setFooter($value)
+	{
+		$result = $this->databaseHandler->executePreparedQuery('footer', $value);
+		$this->footer = $result;
 	}
 	
 	//get form variable GET or POST
@@ -36,21 +85,51 @@ class FrameWorkBackend
 		}
 	}
 	
+	public function showLoginForm($error)
+	{
+		return '
+			<html>
+			<head>
+				<title>Login</title>
+				<link href="css/default.css" rel="stylesheet" type="text/css" />
+			</head>
+			<body><form id="login" action="index.php" method="post">
+			
+			<div class="error">
+				'. $error .'
+			</div>
+			<fieldset >
+				<legend>Login</legend>
+				<label for="username" >Username:</label>
+				<input type="text" name="username" id="username"  maxlength="50" />
+		
+				<label for="password" >Password:</label>
+				<input type="password" name="password" id="password" maxlength="50" />
+		
+				<input type="submit" name="loginbutton" value="Login" />
+				<input type="hidden" name="page" value="dashboard" />
+				<input type="hidden" name="action" value="verifylogin" />
+			</fieldset>
+			</form>
+			</body>
+			</html>';
+	}
+	
 	public function display()
 	{
 		$pagina = '';
 		$pagina .= '
 		<html>
 		<head>
-			<title>Game Triangle</title>
-			<link href="../css/style.css" rel="stylesheet" type="text/css" />
+			<title>'. $this->title .'</title>
+			<link href="'. $this->cssFile .'" rel="stylesheet" type="text/css" />
 		</head>
 		<body>
 		<div id="container">
-			<div id="header"><h1>Header</h1></div>
-			<div id="menu"></div>
-			<div id="content"><p>' . $this->content . '</p></p></div>
-			<div id="footer"><h3>Footer</h3></div>
+			<div id="header">'. $this->header .'</div>
+			<div id="menu">'. $this->menu.'</div>
+			<div id="content">' . $this->content . '</div>
+			<div id="footer">'. $this->footer .'</div>
 		</div>
 		</body>
 		</html>';

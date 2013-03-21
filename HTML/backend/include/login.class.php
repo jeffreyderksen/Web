@@ -1,49 +1,41 @@
 <?php
-class Login
+include_once('user.class.php');
+
+class Login extends FrameWorkBackend
 {
-	public function tryLogin()
+	private $user;
+	
+	public function processLogin($action)
 	{
-		if(empty($_POST['username']))
+		$this->user = new User();
+		
+		if($action == 'verifylogin')
 		{
-			return '<p>Username is empty!</p>';
+			$username = $this->getFormVariable('username');
+			$password = $this->getFormVariable('password');
+			
+			if(empty($username) || empty($password))
+			{
+				return '<img src="images/oops.png" alt="error" width="150" height="150"> Oops, it looks like you have a bad memory..';
+			}
+	
+			$this->user->setAuthentication($username, sha1($password));
 		}
-		if(empty($_POST['password']))
+		else if($action == 'logout')
 		{
-			return '<p>Password is empty!</p>';
+			$this->user->removeAuthentication();
+			return 'failed';
 		}
 	
-		$username = trim($_POST['username']);
-		$password = trim($_POST['password']);
-	
-		if(!$this->CheckLogin($username, $password))
-		{
-			return false;
-		}
-	
-		return true;
+		//always check if user is authenticated
+		if($this->user->isAuthenticated())
+			return 'succes';
+		else
+			return 'failed';
 	}
 	
-	function CheckLoginInDB($username, $password)
+	public function checkLogout($action)
 	{
-		if(!$this->DBLogin())
-		{
-			$this->HandleError("Database login failed!");
-			return false;
-		}
-		$username = $this->SanitizeForSQL($username);
-		$pwdmd5 = md5($password);
-		$qry = "Select name, email from $this->tablename ".
-				" where username='$username' and password='$pwdmd5' ".
-				" and confirmcode='y'";
-		 
-		$result = mysql_query($qry,$this->connection);
-		 
-		if(!$result || mysql_num_rows($result) <= 0)
-		{
-			$this->HandleError("Error logging in. ".
-					"The username or password does not match");
-			return false;
-		}
-		return true;
+	
 	}
 }

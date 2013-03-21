@@ -1,0 +1,54 @@
+body
+{
+	font-family: Verdana;
+}
+#container
+{
+	margin: 0 auto;
+	min-width: 700px;
+	width: 80%;
+	background-color: #EEE;
+}
+#header
+{
+	text-align: center;
+}
+#content
+{
+
+}
+#footer
+{
+	text-align: center;
+}
+.error
+{
+	color: red;
+}
+/* MENU */
+#menu
+{
+	background-color: #059;
+	width: 250px;
+}
+#menu ul
+{
+	list-style: none;
+}
+#menu ul li
+{
+	background-color: #00F;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+#menu ul li a
+{
+	color: black;
+	text-decoration: none;
+	
+	font-size: 18px;
+	font-weight: bold;
+	
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
