@@ -1,4 +1,4 @@
 <?php
 $sqlConnection = new dbHandler();
-$sqlConnection->openConnection("localhost","User","bassie","webcontent");
+$sqlConnection->openConnection("localhost","User","bassie","gametriangle");
 ?>

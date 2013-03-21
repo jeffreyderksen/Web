@@ -11,33 +11,45 @@ class ContentPage
 	private $cssFile;
 	private $jScript;
 	
+	//connection 
+	private $sqlConnection;
 	
-	public function setMenu(ContentPart $value)
+	
+	
+	public function __construct()
+	{
+		$this->sqlConnection = new dbHandler();
+		$this->sqlConnection->openConnection("localhost","User","bassie","gametriangle");		
+	}
+	
+	public function setMenu($value)
 	{
 		$this->menu = $value;
 	}
 	
-	public function setLogin(ContentPart $value)
+	public function setLogin($value)
 	{
 		$this->loginForm = $value;
 	}
 	
-	public function setContent(ContentPart $value)
+	public function setContent($value)
 	{
-		$this->content = $value;
+		$result = $this->sqlConnection->executePreparedQuery('content',$value);
+		$this->content = $result;
 	}
 	
-	public function setTitle()
+	public function setTitle($value)
 	{
-		$this->title = $value;
+		$result = $this->sqlConnection->executePreparedQuery('title',$value);
+		$this->title = $result;
 	}
 	
-	public function setCss()
+	public function setCss($value)
 	{
 		$this->cssFile = $value;
 	}
 	
-	public function setJScript()
+	public function setJScript($value)
 	{
 		$this->jScript = $value;
 	}
@@ -67,6 +79,7 @@ class ContentPage
 					<meta name=description content="beschrijving van de webpagina">
 					<meta name=keywords content="trefwoorden,gescheiden, door, komma\'s">
 					<link rel=stylesheet href="'.$this->cssFile.'">
+					'.$this->jScript.'
 					<title>'.$this->title.'</title>
 					</head>
 					<body>
@@ -82,12 +95,12 @@ class ContentPage
 									<li>Subscribe</li>
 								</ul>
 								<div id="login">
-									'.$this->loginForm->render().'
+									'.$this->loginForm.'
 								</div>
 							</div>
 							
 							<div id="content">
-								'.$this->content->render().'
+								'.$this->content.'
 							</div>
 							
 							<div id="footer">
