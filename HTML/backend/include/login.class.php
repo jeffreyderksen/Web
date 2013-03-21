@@ -24,14 +24,21 @@ class Login extends FrameWorkBackend
 		else if($action == 'logout')
 		{
 			$this->user->removeAuthentication();
-			return 'failed';
+			return 'Why?? =(((((((';
 		}
 	
 		//always check if user is authenticated
 		if($this->user->isAuthenticated())
+		{
+			echo 'Currently logged in as: "' . $_SESSION['username'] . '" with password: "' . $_SESSION['password']  . '"';
 			return 'succes';
+		}
 		else
-			return 'failed';
+		{
+			echo 'Not Logged in';
+			return false;
+		}
+			
 	}
 	
 	public function checkLogout($action)

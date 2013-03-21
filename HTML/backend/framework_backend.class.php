@@ -91,26 +91,28 @@ class FrameWorkBackend
 			<html>
 			<head>
 				<title>Login</title>
-				<link href="css/default.css" rel="stylesheet" type="text/css" />
+				<link href="../css/default.css" rel="stylesheet" type="text/css" />
 			</head>
-			<body><form id="login" action="index.php" method="post">
+			<body>
+			<div id="login">
+				<form action="index.php" method="post">
+				<div class="error">
+					'. $error .'
+				</div>
+				<fieldset >
+					<legend>Login</legend>
+					<label for="username" >Username:</label>
+					<input type="text" name="username" id="username"  maxlength="50" />
 			
-			<div class="error">
-				'. $error .'
+					<label for="password" >Password:</label>
+					<input type="password" name="password" id="password" maxlength="50" />
+			
+					<input type="submit" name="loginbutton" value="Login" />
+					<input type="hidden" name="page" value="dashboard" />
+					<input type="hidden" name="action" value="verifylogin" />
+				</fieldset>
+				</form>
 			</div>
-			<fieldset >
-				<legend>Login</legend>
-				<label for="username" >Username:</label>
-				<input type="text" name="username" id="username"  maxlength="50" />
-		
-				<label for="password" >Password:</label>
-				<input type="password" name="password" id="password" maxlength="50" />
-		
-				<input type="submit" name="loginbutton" value="Login" />
-				<input type="hidden" name="page" value="dashboard" />
-				<input type="hidden" name="action" value="verifylogin" />
-			</fieldset>
-			</form>
 			</body>
 			</html>';
 	}
