@@ -8,7 +8,8 @@ class DatabaseHandler
 			'css' 		=> 'SELECT theme_file FROM admin_themes WHERE theme_name=?',
 			'header' 	=> 'SELECT page_header FROM admin_pages WHERE page_type=?',
 			'footer' 	=> 'SELECT page_footer FROM admin_pages WHERE page_type=?',
-			'content' 	=> 'SELECT page_text FROM admin_pages WHERE page_type=?'
+			'content' 	=> 'SELECT page_text FROM admin_pages WHERE page_type=?',
+			'login' 	=> 'SELECT username, password FROM users WHERE username=? && password=?'
 	);
 	
 	public function openConnection($host, $user, $pass, $database)
@@ -35,7 +36,7 @@ class DatabaseHandler
 		$result = $this->connection->query($query);
 		$menu_items = array(
 				'page_type' => array(),
-				'menu_item' => array()
+				'menu_item' => array(),
 				);
 		
 		while($row = $result->fetch_array())
@@ -49,13 +50,31 @@ class DatabaseHandler
 	
 	public function executePreparedQuery($query, $value)
 	{
-		$preparedQuery = $this->connection->prepare($this->querys[$query]);
-
-		$preparedQuery->bind_param('s', $value);
-		$preparedQuery->execute();
-		$preparedQuery->bind_result($result);
-		$preparedQuery->fetch();	
+		$result = null;
 		
-		return $result;
+		$preparedQuery = $this->connection->prepare($this->querys[$query]);
+		
+		if(!is_array($value))
+		{
+			$preparedQuery->bind_param('s', $value);
+			$preparedQuery->execute();
+			$preparedQuery->bind_result($result);
+			$preparedQuery->fetch();
+			return $result;
+		}
+		else
+		{			
+			$preparedQuery->bind_param('ss', $value[0], $value[1]);
+			$preparedQuery->execute();
+			$preparedQuery->bind_result($username, $password);
+			$preparedQuery->fetch();
+			
+			return $result = array(
+					'username' => $username, 
+					'password' => $password
+			);
+		}		
+		
+		
 	}
 }

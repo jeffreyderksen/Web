@@ -3,7 +3,7 @@ include_once('include/database_handler.class.php');
 
 class FrameWorkBackend
 {
-	private $databaseHandler;
+	public $databaseHandler;
 	
 	private $title;
 	private $cssFile;
@@ -91,7 +91,7 @@ class FrameWorkBackend
 			<html>
 			<head>
 				<title>Login</title>
-				<link href="../css/default.css" rel="stylesheet" type="text/css" />
+				<link href="css/default.css" rel="stylesheet" type="text/css" />
 			</head>
 			<body>
 			<div id="login">
@@ -121,20 +121,27 @@ class FrameWorkBackend
 	{
 		$pagina = '';
 		$pagina .= '
-		<html>
-		<head>
-			<title>'. $this->title .'</title>
-			<link href="'. $this->cssFile .'" rel="stylesheet" type="text/css" />
-		</head>
-		<body>
-		<div id="container">
-			<div id="header">'. $this->header .'</div>
-			<div id="menu">'. $this->menu.'</div>
-			<div id="content">' . $this->content . '</div>
-			<div id="footer">'. $this->footer .'</div>
-		</div>
-		</body>
-		</html>';
+			<!DOCTYPE html>
+			<html>
+			<head>
+				<meta charset="UTF-8">
+				<title>'. $this->title .'</title>
+				<link href="'. $this->cssFile .'" rel="stylesheet" type="text/css" />
+			</head>
+			<body>
+			<div id="wrap">
+				<div id="sidebar">
+					<div id="menu">'. $this->menu.'</div>
+  				</div>
+				<div id="container">
+					<div id="header">'. $this->header .'</div>
+					<div id="content">' . $this->content . '</div>
+					<div id="footer">Logged in as: "' . $_SESSION['username'] . '"</div>
+				</div>
+				
+			</div>
+			</body>
+			</html>';
 		
 		//close connection
 		$this->databaseHandler->closeConnection();
