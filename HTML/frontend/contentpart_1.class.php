@@ -22,9 +22,20 @@ class ContentPage
 		$this->sqlConnection->openConnection("localhost","User","bassie","gametriangle");		
 	}
 	
-	public function setMenu($value)
+	public function setMenu()
 	{
-		$this->menu = $value;
+		$menu_items = $this->sqlConnection->executeQuery('menu');
+		
+		$result = '';
+		
+		for($i = 0; $i < sizeof($menu_items['menu_title']); $i++)
+		{
+				$result .= '<li>';
+				$result .= '<a href="?page='. strtolower($menu_items['menu_title'][$i]). '">' . $menu_items['menu_item'][$i] . '</a>';
+				$result .= '</li>';
+		}		
+		
+		$this->menu = $result;
 	}
 	
 	public function setLogin($value)
@@ -90,9 +101,7 @@ class ContentPage
 							
 							<div id="menu">
 								<ul id="menulist">
-									<li>Home</li>
-									<li>Categories</li>
-									<li>Subscribe</li>
+									'.$this->menu.'
 								</ul>
 								<div id="login">
 									'.$this->loginForm.'

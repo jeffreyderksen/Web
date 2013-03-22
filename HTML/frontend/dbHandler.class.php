@@ -2,9 +2,10 @@
 class dbHandler
 {
 	private $dbHandle;
-	private $query = array(
+	private $queries = array(
 			'title' => 'SELECT content_title FROM content WHERE content_type=?',
-			'content' => 'SELECT content_text FROM content WHERE content_type=?'
+			'content' => 'SELECT content_text FROM content WHERE content_type=?',
+			'menu' => 'SELECT menu_title, menu_item FROM menu'
 	);
 	
 	public function openConnection($host,$user,$password,$database)
@@ -24,17 +25,32 @@ class dbHandler
 	}
 	
 	//execute functie
-	public function executeQuery($sql_query)
+	public function executeQuery($query)
 	{
 		if(!is_null($this->dbHandle))
 		{
-		return $this->dbHandle->query($sql_query);
+			if($query == 'menu')
+			{				
+				$result = $this->dbHandle->query($this->queries[$query]);
+				$menu_items = array(
+								'menu_title' => array(),
+								'menu_item' => array()
+								);
+				
+				while($row = $result->fetch_array())
+				{
+					array_push($menu_items['menu_title'], $row['menu_title']);
+					array_push($menu_items['menu_item'], $row['menu_item']);					
+				}
+				return $menu_items;
+			}
 		}
+		
 	}
 	
 	public function executePreparedQuery($query, $value)
 	{
-		$preparedQuery = $this->dbHandle->prepare($this->query[$query]);
+		$preparedQuery = $this->dbHandle->prepare($this->queries[$query]);
 		
 		$preparedQuery->bind_param('s', $value);
 		$preparedQuery->execute();

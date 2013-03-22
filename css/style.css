@@ -83,7 +83,7 @@ h1 {
 }
 #content{
 	width:95%;
-	min-height: 95%;
+	min-height:	390px;
 	margin: 1% auto;
 }
 .homecat{
@@ -99,6 +99,24 @@ h1 {
 }
 .homecat ul{
 	list-style-type: none;
+}
+.formdiv{
+	background-color:#5dbce5;
+	width: 60%;
+	min-height:	390px;
+	margin: auto;
+	overflow: auto;
+	text-align: center;
+}
+.formdiv table{
+	text-align: left;
+	margin: 2% auto;
+}
+.formdiv h3{
+	margin: 1%;
+}
+.formdiv .button {
+	margin: 2%;
 }
 #footer{
 	background-color:#5dbce5;

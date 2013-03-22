@@ -35,7 +35,7 @@ class DatabaseHandler
 		$result = $this->connection->query($query);
 		$menu_items = array(
 				'page_type' => array(),
-				'menu_item' => array(),
+				'menu_item' => array()
 				);
 		
 		while($row = $result->fetch_array())
