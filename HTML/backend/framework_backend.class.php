@@ -94,23 +94,26 @@ class FrameWorkBackend
 				<link href="css/default.css" rel="stylesheet" type="text/css" />
 			</head>
 			<body>
+			<div class="logo">
+				<img class="logo-img" src="images/logo.png" />
+			</div>
 			<div id="login">
-				<form action="index.php" method="post">
 				<div class="error">
 					'. $error .'
 				</div>
-				<fieldset >
-					<legend>Login</legend>
+				<form id="loginform" action="index.php" method="post">
 					<label for="username" >Username:</label>
 					<input type="text" name="username" id="username"  maxlength="50" />
 			
 					<label for="password" >Password:</label>
 					<input type="password" name="password" id="password" maxlength="50" />
-			
-					<input type="submit" name="loginbutton" value="Login" />
+							
+					<a class="ww-link" href="#">Wachtwoord vergeten?</a>
+							
+					<input type="submit" class="submit" name="loginbutton" value="Login" />
 					<input type="hidden" name="page" value="dashboard" />
 					<input type="hidden" name="action" value="verifylogin" />
-				</fieldset>
+				
 				</form>
 			</div>
 			</body>
@@ -131,6 +134,9 @@ class FrameWorkBackend
 			<body>
 			<div id="wrap">
 				<div id="sidebar">
+					<div class="logo">
+						<img class="logo-img" src="images/logo.png" />
+					</div>
 					<div id="menu">'. $this->menu.'</div>
   				</div>
 				<div id="container">

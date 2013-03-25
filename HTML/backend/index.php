@@ -9,7 +9,7 @@ $framework = new FrameWorkBackend();
 
 $login = new Login();
 
-/*CHECK LOGIN*/
+/* CHECK LOGIN */
 $action = $framework->getFormVariable('action');
 
 if(($error = $login->processLogin($action)) != 'succes')

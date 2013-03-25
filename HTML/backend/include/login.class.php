@@ -13,7 +13,7 @@ class Login extends FrameWorkBackend
 			
 			if(empty($username) || empty($password))
 			{
-				return '<img src="images/oops.png" alt="error" width="150" height="150"> Oops, it looks like you have a bad memory..';
+				return '<img class="error-oops" src="images/oops.png" alt="error"></br> Oops, it looks like you have a bad memory..';
 			}
 	
 			$this->setAuthentication($username, sha1($password));
@@ -21,13 +21,13 @@ class Login extends FrameWorkBackend
 		else if($action == 'logout')
 		{
 			$this->removeAuthentication();
-			return 'Why?? =(((((((';
+			return 'You are now logged out.';
 		}
 	
 		//always check if user is authenticated
 		if($this->isAuthenticated())
 		{
-			return 'succes';
+			return true;
 		}
 		else
 		{
