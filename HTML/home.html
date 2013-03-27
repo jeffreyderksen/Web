@@ -20,7 +20,7 @@
 				<li>Subscribe</li>
 			</ul>
 			<div id="login">
-				<form>					
+				<form method="post" action="index.php">					
 					<table>
 						<tr>
 							<td>
@@ -39,7 +39,8 @@
 							</td>						
 						</tr>
 					</table>
-					<input class="button" type="submit" value="Login"></input>
+					<input class="button" type="submit" name="loginbutton"value="Login"></input>
+					<input type="hidden" name="action" value="verifylogin" />
 				</form>
 			</div>
 		</div>

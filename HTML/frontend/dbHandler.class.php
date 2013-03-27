@@ -5,8 +5,9 @@ class dbHandler
 	private $queries = array(
 			'title' => 'SELECT content_title FROM content WHERE content_type=?',
 			'content' => 'SELECT content_text FROM content WHERE content_type=?',
-			'menu' => 'SELECT menu_title, menu_item FROM menu'
-	);
+			'menu' => 'SELECT menu_title, menu_item FROM menu',
+			'user' => 'SELECT member_uname FROM member WHERE member_uname=?',
+			'pass' => 'SELECT member_pass FROM member WHERE member_uname=?');
 	
 	public function openConnection($host,$user,$password,$database)
 	{
@@ -43,7 +44,13 @@ class dbHandler
 					array_push($menu_items['menu_item'], $row['menu_item']);					
 				}
 				return $menu_items;
+			} else if ($query == 'login' || $query == 'greeting')
+			{
+				$result = $this->dbHandle->query($this->queries[$query]);
+				return $result;
 			}
+			
+			
 		}
 		
 	}
@@ -58,6 +65,14 @@ class dbHandler
 		$preparedQuery->fetch();
 		
 		return $result;
+	}
+	
+	public function addUserQuery($fn,$ln,$un,$pw,$em)
+	{
+		$result = 	'INSERT INTO member(member_fname, member_lname, member_uname, member_pass, member_email) 
+					VALUES("'.$fn.'","'.$ln.'","'.$un.'","'.$pw.'","'.$em.'")';
+		
+		$this->dbHandle->query($result);
 	}
 	
 	//close connection

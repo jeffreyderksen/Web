@@ -46,7 +46,7 @@
 		
 		<div id="content">
 			<div class=formdiv>
-				<form action="" method="post">
+				<form action="index.php" method="post">
 					<table>
 						<tr>
 							<td colspan=2><h3>Personal Settings</h3></td>
@@ -61,7 +61,7 @@
 						</tr>
 						<tr>
 							<td><label>Age:</label></td>
-							<td><select id=day name=day>
+							<td><select id="day" name="day">
 								<option>01</option>
 								<option>02</option>
 								<option>03</option>
@@ -94,7 +94,7 @@
 								<option>30</option>
 								<option>31</option>
 								</select>
-								<select id=month name=month>
+								<select id="month" name="month">
 								<option>01</option>
 								<option>02</option>
 								<option>03</option>
@@ -108,29 +108,29 @@
 								<option>11</option>
 								<option>12</option>
 								</select>
-								<input id=year name=year type=text value=year maxlength=4 size=4/></td>
+								<input id="year" name="year" type="text" value="year" maxlength=4 size=4/></td>
 						</tr>
 						<tr>
 							<td colspan=2>Do you allow others to see this information?</td>
 						</tr>
 						<tr>
-								<td><label for=allow>Yes</label><input id=allow name=public type=radio value="Yes" checked>
-								<td><label for=disallow>No</label><input id=disallow name=public type=radio value="No"></td>
+								<td><label for="allow">Yes</label><input id="allow" name="public" type="radio" value="Yes" checked/>
+								<td><label for="disallow">No</label><input id="disallow" name="public" type="radio" value="No"/></td>
 						</tr>
 						<tr>
 							<td colspan=2><h3>Account Settings</h3></td>
 						</tr>
 						<tr>
 							<td><label>Username:</label></td>
-							<td><input type="text" name="username" /></td>
+							<td><input type="text" name="uname" /></td>
 						</tr>
 						<tr>
 							<td><label>Password:</label></td>
-							<td><input type="password" name="password" /></td>
+							<td><input type="password" name="pword" /></td>
 						</tr>
 						<tr>
 							<td><label>Confirm Password:</label></td>
-							<td><input type="password" name="confirmpassword" /></td>
+							<td><input type="password" name="confirmpword" /></td>
 						</tr>
 						<tr>
 							<td><label>E-mail address:</label></td>
@@ -140,11 +140,12 @@
 							<td colspan=2>Do you want to receive messages from the site</td>
 						</tr>
 						<tr>
-								<td><label for=allow>Yes</label><input id=allow name=news type=radio value="Yes" checked>
-								<td><label for=disallow>No</label><input id=disallow name=news type=radio value="No"></td>
+								<td><label for="allow">Yes</label><input id="allow" name="news" type="radio" value="Yes" checked>
+								<td><label for="disallow">No</label><input id="disallow" name="news" type="radio" value="No"></td>
 						</tr>
 					</table>
 					<input class="button" type="submit" value="Register"/>
+					<input type="hidden" name="action" value="register"/>
 				</form>
 			</div>
 		</div>

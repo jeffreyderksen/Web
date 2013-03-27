@@ -83,6 +83,9 @@ h1 {
 #login table{
 	float: left;
 }
+#login p{
+	margin: 0 1%;
+}
 #button{
 	float: right;
 	margin: 10% 0 0 0;

@@ -5,6 +5,7 @@ class ContentPage
 	private $menu;
 	private $loginForm;
 	private $content;
+	private $login;
 	
 	//header
 	private $title;
@@ -12,7 +13,7 @@ class ContentPage
 	private $jScript;
 	
 	//connection 
-	private $sqlConnection;
+	public $sqlConnection;
 	
 	
 	
@@ -40,7 +41,37 @@ class ContentPage
 	
 	public function setLogin($value)
 	{
-		$this->loginForm = $value;
+			if($value == 'login')
+			{	
+				$result = '<form method="post" action="index.php">					
+								<table>
+									<tr>
+										<td>
+											<label>Login:</label>
+										</td>
+										<td>
+											<input type="text" name="username"></input>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<label>Password:</label>
+										</td>
+										<td>
+											<input type="password" name="password"></input>
+										</td>						
+									</tr>
+								</table>
+								<input class="button" type="submit" name="loginbutton" value="Login"></input>
+								<input type="hidden" name="action" value="login"/>
+								<input type="hidden" name="action" value="verifylogin" />
+							</form>';
+				$this->login = $result;
+			} else {
+				$result = '<p>Welcome back '.$_SESSION['username'].'</br> hopefully you will enjoy your visit</br>
+							<a href="?page=home&action=logout">Logout</a></p>';
+				$this->login = $result;
+			}
 	}
 	
 	public function setContent($value)
@@ -63,6 +94,16 @@ class ContentPage
 	public function setJScript($value)
 	{
 		$this->jScript = $value;
+	}
+	
+	public function addUser($fn,$ln,$un,$pw,$em)
+	{
+		$this->sqlConnection->addUserQuery($fn,$ln,$un,$pw,$em);
+	}
+	
+	public function setUser($value)
+	{
+		
 	}
 	
 	public function getFormVariable($value)
@@ -104,7 +145,7 @@ class ContentPage
 									'.$this->menu.'
 								</ul>
 								<div id="login">
-									'.$this->loginForm.'
+									'.$this->login.'
 								</div>
 							</div>
 							
