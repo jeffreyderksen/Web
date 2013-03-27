@@ -6,12 +6,10 @@ include_once('framework_backend.class.php');
 include_once('include/login.class.php');
 
 $framework = new FrameWorkBackend();
-
 $login = new Login();
 
 /* CHECK LOGIN */
 $action = $framework->getFormVariable('action');
-
 if(($error = $login->processLogin($action)) != 'succes')
 {
 	//show login form
@@ -19,18 +17,21 @@ if(($error = $login->processLogin($action)) != 'succes')
 	return;
 }
 
-/* USER LOGGED IN */
+/* CHECK PAGE */
 $page = $framework->getFormVariable('page');
 if(empty($page))
 	$page = 'dashboard';
 
-/* LOAD PAGE */
-$framework->setTitle($page);
-$framework->cssFile('default');
-$framework->setHeader($page);
-$framework->setMenu('menu');
+/* CHECK ACTION */
+$framework->handleAction($page, $action);
+
+/* USER LOGGED IN LOAD PAGE */
+$framework->setTitle('title', $page);
+$framework->cssFile('css', 'default');
+$framework->setHeader('header', $page);
+$framework->setMenu('menu', null);
 $framework->setContent($page);
-$framework->setFooter($page);
+$framework->setFooter('footer', $page);
 
 echo $framework->display();
 

@@ -3,6 +3,14 @@ body
 	font-family: sans-serif;
 	color: rgb(71, 71, 71);
 }
+table
+{
+	border: solid 2px;
+}
+table tr, table td, table th
+{
+	border: solid 2px;
+}
 #wrap 
 {
 	width: 980px;
