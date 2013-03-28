@@ -4,6 +4,14 @@ include_once('framework_backend.class.php');
 
 class ActionHandler extends FrameWorkBackend
 {
+	public function updateRow($page, $id)
+	{
+		$tabel = $this->getTabel($page);
+		$columns = $this->getColumns($page);
+		
+		$columnsString = $this->getColumnsString($columns);
+		$valuesString = $this->getUpdateValues($columns, $id);
+	}
 	
 	public function newRow($page)
 	{
@@ -67,13 +75,35 @@ class ActionHandler extends FrameWorkBackend
 	private function getValuesString($array)
 	{
 		$values = '';
-		for($i = 0; $i < count($array); $i++)
-		{
-			if($i != 0)
-				$values .= '0';
-			if($i != count($array)-1 && $i != 0)
+		//niet met 0 beginnen! Dat is het ID(AUTO INCREMENT)
+		for($i = 1; $i < count($array); $i++)
+		{			
+			$values .= '0';
+			if($i != count($array)-1)
 				$values .= ',';
 		}
 		return $values;
+	}
+	
+	private function getUpdateValues($columns, $id)
+	{
+		$valuesString = '';
+		
+		echo '<pre>';
+		print_r($columns);
+		echo  '</pre>';
+		
+		for($i = 1; $i < count($columns); $i++)
+		{
+			echo 'form variable = ' . $columns[$i] . $id . ' - Value = ' . $this->getFormVariable($columns[$i] . $id) . '</br>';
+			$value = $this->getFormVariable('content_type56');
+			echo $value;
+			
+			if($i != count($columns)-1)
+				$valuesString .= ',';
+		}
+		
+		echo $valuesString . "</br>";
+		return $valuesString;
 	}
 }

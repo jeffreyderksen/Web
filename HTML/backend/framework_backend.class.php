@@ -12,9 +12,6 @@ class FrameWorkBackend
 	private $menu;
 	private $content;
 	private $footer;
-	
-	//dashboard variables
-	private $newRow;
 
 	//constructor
 	public function __construct()
@@ -64,26 +61,26 @@ class FrameWorkBackend
 		$result = $this->databaseHandler->executeQuery($query);
 		$content = '';
 		
+		//add Nieuwe Rij button
+		$content .= '<form id="loginform" action="index.php" method="get">
+					 <input type="submit" value="Nieuwe Rij" />
+					 <input type="hidden" name="action" value="newRow"/>
+					 <input type="hidden" name="page" value="'. $query .'"/>
+					 </form>';
+		
 		if(is_array($result))
 		{
-			//start form
-			$content .= '<form id="tabelform" action="index.php" method="post">';
 			//get column names for table
 			$columns = $this->getColumns($result);
-			
-			//add buttons
-			$content .= $this->addButtons();
 			
 			if(!empty($columns))
 			{
 				//start table
 				$content .= '<table>';
 	
-				/*echo '<pre>';
-				print_r($result);
-				echo  '</pre>';*/
+				//echo '<pre>'; print_r($result); echo  '</pre>';
 				
-				//add settings column
+				//add empty column
 				$content .= '<th></th>';
 				//columns
 				for($i = 0; $i < count($columns[0]); $i++)
@@ -96,23 +93,16 @@ class FrameWorkBackend
 					$content .= '<tr>';
 					for($j = -1; $j < count($result[$i]); $j++)
 					{
+						$content .= '<form id="loginform" action="index.php" method="get">';
 						//add settings
 						if($j == -1)
-							$content .= '<td><a href="?page=manage_pages&action=delete&id='. $result[$i][$columns[0][0]] .'">Delete</a></td>';
+						{						
+							$content .= $this->addButtons($result[$i][$columns[0][0]], $query);
+						}
 						else
-							$content .= '<td><input type="textarea" value="' . $result[$i][$columns[0][$j]] . '"/></td>';
+							$content .= '<td><input type="textarea" name="' . $columns[0][$j] . $result[$i][$columns[0][0]] .'" value="' . $result[$i][$columns[0][$j]] . '"/></td>';
+						$content .= '</form>';
 					}
-					$content .= '</tr>';
-				}
-				//check for new row
-				if($this->newRow)
-				{
-					$content .= '<tr>';
-					for($i = 0; $i < count($columns[0]); $i++)
-					{
-						$content .= '<td><input type="textarea" value="0"/></td>';
-					}			
-					
 					$content .= '</tr>';
 				}
 				
@@ -125,7 +115,6 @@ class FrameWorkBackend
 			{
 				$content .= 'No results in database';
 			}
-			$content .= '</form>';
 			$this->content = $content;
 		}
 		else
@@ -150,17 +139,6 @@ class FrameWorkBackend
 		return $columns;
 	}
 	
-	public function addButtons()
-	{
-		$content = '';
-		$content .= '<input type="submit" value="Nieuwe rij" name="submit"/>
-					 <input type="hidden" name="action" value="newRow" />
-					 <input type="hidden" name="page" value="manage_pages" />
-					 </br>';
-		
-		return $content;
-	}
-	
 	public function handleAction($page, $action)
 	{
 		$actionHandler = new ActionHandler();
@@ -168,13 +146,35 @@ class FrameWorkBackend
 		switch($action)
 		{
 			case 'newRow': 
-				$actionHandler->newRow($page);
-			case 'delete': 
+			{
+				$actionHandler->newRow($page); break;
+			}
+			case 'Delete': 
 			{
 				$id = $this->getFormVariable('id');
 				$actionHandler->deleteRow($page, $id);
+				break;
+			}
+			case 'Update':
+			{
+				$id = $this->getFormVariable('id');
+				$actionHandler->updateRow($page, $id);
+				break;
 			}
 		}
+	}
+	
+	public function addButtons($id, $page)
+	{
+		$content = '';
+		//$content .= '<td><a href="?page=manage_pages&action=delete&id='. $result[$i][$columns[0][0]] .'">Delete </a>';
+		$content .= '<td>
+						<input type="submit" name="action" value="Delete"/>
+						<input type="submit" name="action" value="Update"/>
+						<input type="hidden" name="id" value="'. $id .'"/>
+						<input type="hidden" name="page" value="'. $page .'"/>
+					</td>';
+		return $content;
 	}
 	
 	//get form variable GET or POST
