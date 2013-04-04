@@ -4,9 +4,18 @@ session_start();
 
 include_once('framework_backend.class.php');
 include_once('include/login.class.php');
+include_once('include/config.class.php');
 
 $framework = new FrameWorkBackend();
+$config = new Config();
 $login = new Login();
+
+/* DEFAULT PAGE SETTINGS */
+$framework->setCharset($config->getCharset());
+$framework->setMetaKeywords($config->getMetaKeywords());
+$framework->setMetaDescription($config->getMetaDescription());
+$framework->setAuthor($config->getAuthor());
+$framework->setCssFile($config->getCssFile());
 
 /* CHECK LOGIN */
 $action = $framework->getFormVariable('action');
@@ -26,12 +35,20 @@ if(empty($page))
 $framework->handleAction($page, $action);
 
 /* USER LOGGED IN LOAD PAGE */
-$framework->setTitle('title', $page);
-$framework->cssFile('css', 'default');
-$framework->setHeader('header', $page);
-$framework->setMenu('menu', null);
-$framework->setContent($page);
-$framework->setFooter('footer', $page);
+if(($error = $framework->loadPage($page)) == true)
+{
+	$framework->setTitle('page_title');
+	$framework->setHeader('page_header');
+	$framework->setFooter('page_footer');
+	$framework->setContent('page_text');
+	$framework->setMenu();
+}
+else
+{
+	//stop page render
+	echo $error;
+	return;
+}
 
 echo $framework->display();
 

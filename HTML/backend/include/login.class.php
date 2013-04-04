@@ -42,13 +42,14 @@ class Login extends FrameWorkBackend
 			return false;
 	
 		//database connectie
-		$values = array($username, $password);
-		$result = $this->databaseHandler->executePreparedQuery('login', $values);
+		$query = 'SELECT username, password FROM users WHERE username=:username && password=:password';
+		$values = array(':username' => $username, ':password' => $password);
+		$result = $this->databaseHandler->executeQuery($query, $values);
 		
-		if(is_array($result))
+		if(is_array($result[0]))
 		{
-			$usernameData = $result['username'];
-			$passwordData = $result['password'];
+			$usernameData = $result[0]['username'];
+			$passwordData = $result[0]['password'];
 			
 			if($username == $usernameData && $password == $passwordData)
 			{

@@ -6,8 +6,15 @@ class FrameWorkBackend
 {
 	public $databaseHandler;
 	
-	private $title;
+	private $page;
+	
+	private $charset;
+	private $metakeywords;
+	private $metadescription;
+	private $author;
 	private $cssFile;
+	
+	private $title;
 	private $header;
 	private $menu;
 	private $content;
@@ -18,125 +25,147 @@ class FrameWorkBackend
 	{
 		//maak object voor de database handler
 		$this->databaseHandler = new DataBaseHandler();
-		$this->databaseHandler->openConnection('localhost', 'test', 'test', 'gametriangle');
+		
+		if(!$this->databaseHandler->openConnection('mysql:dbname=gametriangle;host=localhost', 'test', 'test'))
+			echo '<p style="color: red">Error connecting to database.</p>';
 	}
 	
-	public function setTitle($query, $value)
+	//Laad alle page settings(behalve het menu)
+	public function loadPage($page)
 	{
-		$result = $this->databaseHandler->executePreparedQuery($query, $value);
-		$this->title = $result;
+		if($page != 'edit')
+		{
+			$param = array(':page_menu' => $page);
+			$query = 'SELECT page_menu, page_title, page_header, page_footer, page_text FROM admin_pages
+				  WHERE page_menu=:page_menu';
+			$result = $this->databaseHandler->executeQuery($query, $param);
+			
+			if(is_array($result))
+			{
+				$this->page = $result[0];
+				return true;
+			}
+			else
+			{
+				return 'Error loading page';
+			}
+		}
 	}
 	
-	public function cssFile($query, $value)
+	/*DEFAULT PAGE SETTINGS */
+	public function setCharset($value)
 	{
-		$result = $this->databaseHandler->executePreparedQuery($query, $value);
-		$this->cssFile = $result;
+		$this->charset = $value;
+	}
+	public function setMetaKeywords($value)
+	{
+		$this->metakeywords = $value;
+	}
+	public function setMetaDescription($value)
+	{
+		$this->metadescription = $value;
+	}
+	public function setAuthor($value)
+	{
+		$this->author = $value;
+	}
+	public function setCssFile($value)
+	{
+		$this->cssFile = $value;
 	}
 	
-	public function setHeader($query, $value)
+	/* CURRENT PAGE SETTINGS */
+	public function setTitle($value)
 	{
-		$result = $this->databaseHandler->executePreparedQuery($query, $value);
-		$this->header = $result;
+		$this->title = $this->page[$value];
+	}
+	public function setHeader($value)
+	{
+		$this->header = $this->page[$value];
+	}
+	
+	public function setFooter($value)
+	{
+		$this->footer = $this->page[$value];
+	}
+	
+	public function setContent($value)
+	{
+		$content = '';
+		$page = $this->page['page_menu'];
+		//check voor statische tekst in database
+		if(empty($this->page[$value]))
+		{
+			//laad frontend CONTENT
+			if($this->page['page_menu'] == 'manage_pages')
+			{
+				
+				$query = 'SELECT content_id,content_menu, content_text FROM content';
+				$result = $this->databaseHandler->executeQuery($query);
+									
+				//table weergeven met alle pages
+				$content .= '<table>';
+				$content .= '<tr><th>Settings</th><th>#</th><th>Page menu-item</th><th>Page text</th></tr>';
+				for($i = 0; $i < count($result); $i++)
+				{
+					$content .= '<tr>';
+					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['content_id'] .'"><img src="images/icons/delete.png"/> Edit<a> <a href=""><img src="images/icons/table_edit.png"/>Delete</a></td>';
+					$content .= '<td>'. ($i+1) .'</td><td>'. $this->getMenuTitle($result[$i]['content_menu']) .'</td><td>'. $result[$i]['content_text'] .'</td>';
+					$content .= '</tr>';
+				}
+				$content .= '</table>';
+			}
+			//laad frontend USERS
+			else if($this->page['page_menu'] == 'manage_accounts')
+			{
+				//TODO
+			}
+			
+			/*check voor edit pagina
+			$row = $this->getFormVariable('row');
+			$tabel = $this->getFormVariable('tabel');
+			$columns = $this->getColumns($tabel);
+				
+			$query = 'SELECT * FROM '. $tabel .' WHERE '. $columns[0] .'=' . $row;
+				
+			$param = array(':' => $value);
+			$result = $this->databaseHandler->executeQuery($query, $param);
+				
+			$content .= $this->displayEditPage($result, $tabel, $columns, $row);*/
+			
+			
+		}
+		else
+		{
+			$content .= $this->page['page_text'];
+		}
+	
+		$this->content .= $content;
 	}
 	
 	public function setMenu()
 	{
-		$menuItems = $this->databaseHandler->executeQuery('admin_menu');
+		$query = 'SELECT page_menu FROM admin_pages';
+		$menuItems = $this->databaseHandler->executeQuery($query);
 		
 		$menu = '';
 		$menu .= '<ul>';
 		for($i = 0; $i < sizeof($menuItems); $i++)
 		{
 			$menu .= '<li>';
-			$menu .= '<a href="?page='. strtolower($menuItems[$i]['page_type']). '">' . $menuItems[$i]['menu_item'] . '</a>';
+			$menu .= '<a href="?page='. $menuItems[$i]['page_menu'] . '">'. $this->getMenuTitle($menuItems[$i]['page_menu']) .'</a>';
 			$menu .= '</li>';
 		}
+		$menu .= '<li><a href="?action=logout">Logout</a></li>';
 		$menu .= '</ul>';
 		
 		$this->menu = $menu;
 	}
 	
-	public function setContent($query)
+	private function getMenuTitle($value)
 	{
-		$result = $this->databaseHandler->executeQuery($query);
-		$content = '';
-		
-		//add Nieuwe Rij button
-		$content .= '<form id="loginform" action="index.php" method="get">
-					 <input type="submit" value="Nieuwe Rij" />
-					 <input type="hidden" name="action" value="newRow"/>
-					 <input type="hidden" name="page" value="'. $query .'"/>
-					 </form>';
-		
-		if(is_array($result))
-		{
-			//get column names for table
-			$columns = $this->getColumns($result);
-			
-			if(!empty($columns))
-			{
-				//start table
-				$content .= '<table>';
-	
-				//echo '<pre>'; print_r($result); echo  '</pre>';
-				
-				//add empty column
-				$content .= '<th></th>';
-				//columns
-				for($i = 0; $i < count($columns[0]); $i++)
-				{
-					$content .= '<th>' . $columns[0][$i] . '</th>';
-				}
-				//rows
-				for($i = 0; $i < count($result); $i++)
-				{
-					$content .= '<tr>';
-					for($j = -1; $j < count($result[$i]); $j++)
-					{
-						$content .= '<form id="loginform" action="index.php" method="get">';
-						//add settings
-						if($j == -1)
-						{						
-							$content .= $this->addButtons($result[$i][$columns[0][0]], $query);
-						}
-						else
-							$content .= '<td><input type="textarea" name="' . $columns[0][$j] . $result[$i][$columns[0][0]] .'" value="' . $result[$i][$columns[0][$j]] . '"/></td>';
-						$content .= '</form>';
-					}
-					$content .= '</tr>';
-				}
-				
-				//end table
-				$content .= '</table>';
-			
-				$this->content = $content;
-			}
-			else
-			{
-				$content .= 'No results in database';
-			}
-			$this->content = $content;
-		}
-		else
-		{
-			$this->content = $result;
-		}
-	}
-	
-	public function setFooter($query, $value)
-	{
-		$result = $this->databaseHandler->executePreparedQuery($query, $value);
-		$this->footer = $result;
-	}
-	
-	public function getColumns($array)
-	{
-		$columns = array();
-		//get column names
-		if(!empty($array))
-			array_push($columns, array_keys($array[0]));
-		
-		return $columns;
+		//haal alle '_' weg en eerste letter UPPERCASE
+		return $value = ucfirst(str_replace(array('_'), array(' ',), $value));
 	}
 	
 	public function handleAction($page, $action)
@@ -145,36 +174,26 @@ class FrameWorkBackend
 		
 		switch($action)
 		{
-			case 'newRow': 
+			case 'insert': 
 			{
 				$actionHandler->newRow($page); break;
 			}
-			case 'Delete': 
+			case 'delete': 
 			{
-				$id = $this->getFormVariable('id');
-				$actionHandler->deleteRow($page, $id);
-				break;
+				$row = $this->getFormVariable('row');
+				$actionHandler->deleteRow($page, $row); break;
 			}
-			case 'Update':
+			case 'load':
 			{
-				$id = $this->getFormVariable('id');
-				$actionHandler->updateRow($page, $id);
-				break;
+				$row = $this->getFormVariable('row'); 
+				$this->content .= $this->displayEditPage($page, $row); break;
+			}
+			case 'edit':
+			{
+				$row = $this->getFormVariable('row');
+				$actionHandler->updateRow($page, $row); break;
 			}
 		}
-	}
-	
-	public function addButtons($id, $page)
-	{
-		$content = '';
-		//$content .= '<td><a href="?page=manage_pages&action=delete&id='. $result[$i][$columns[0][0]] .'">Delete </a>';
-		$content .= '<td>
-						<input type="submit" name="action" value="Delete"/>
-						<input type="submit" name="action" value="Update"/>
-						<input type="hidden" name="id" value="'. $id .'"/>
-						<input type="hidden" name="page" value="'. $page .'"/>
-					</td>';
-		return $content;
 	}
 	
 	//get form variable GET or POST
@@ -192,6 +211,63 @@ class FrameWorkBackend
 		{
 			return null;
 		}
+	}
+	
+	private function getTabel($page)
+	{
+		switch($page)
+		{
+			case 'manage_pages' : return 'content';
+			case 'manage_accounts' : return 'users';
+		}
+	}
+	private function getColumns($tabel)
+	{
+		switch($tabel)
+		{
+			case 'content' : return array('content_id', 'content_menu', 'content_title', 'content_header', 'content_footer', 'content_text');
+			case 'users' : return array('user_id', 'username', 'password', 'email', 'admin');
+		}
+	}
+	
+	public function displayEditPage($page, $row)
+	{
+		$tabel = $this->getTabel($page);
+		$columns = $this->getColumns($tabel);
+		
+		$content = '<div id="edit-page">
+					<h3>Tabel "'. $tabel .'"</h3>
+					<h4>Row "'. $row .'"</h4>
+					<form action="index.php" method="get">';
+		
+		$param = array(':id' => $row);
+		$query = 'SELECT * FROM '. $tabel .' WHERE '. $columns[0] .'=:id';
+		$result = $this->databaseHandler->executeQuery($query, $param);
+		
+		echo '<pre>';
+		print_r($result);
+		echo '</pre>';
+		
+		for($i = 0; $i < count($result[0])/2; $i++)
+		{
+			$content .= '<label for="'. $columns[$i] .'">Change '. $columns[$i] .'</label>';
+			if($columns[$i] != 'content_text')
+				$content .= '<input name="'. $columns[$i] .'" value="'. $result[0][$columns[$i]] .'"/>';
+			else
+				$content .= '<textarea name="'. $columns[$i] .'" >'. $result[0][$columns[$i]] .'</textarea>
+							 <script>CKEDITOR.replace( "content_text" );</script>';
+			
+		}
+
+		//buttons
+		$content .= '<input type="submit" name="submit" value="Wijzig"/>
+					 <input type="hidden" name="row" value="'. $row .'"/>
+					 <input type="hidden" name="action" value="edit"/>
+					 <input type="hidden" name="page" value="'. $page .'"/>';
+		
+		$content .= '</form></div>';
+		
+		return $content;
 	}
 	
 	public function showLoginForm($error)
@@ -235,10 +311,14 @@ class FrameWorkBackend
 		$pagina .= '
 			<!DOCTYPE html>
 			<html>
-			<head>
-				<meta charset="UTF-8">
+			<head>			
+				<meta charset="'. $this->charset .'">
+				<meta name="keywords" content="'. $this->metakeywords .'">
+				<meta name="description" content="'. $this->metadescription .'">
+				<meta name="author" content="'. $this->author .'">
 				<title>'. $this->title .'</title>
 				<link href="'. $this->cssFile .'" rel="stylesheet" type="text/css" />
+				<script src="_js/ckeditor/ckeditor.js"></script>
 			</head>
 			<body>
 			<div id="wrap">
@@ -257,9 +337,6 @@ class FrameWorkBackend
 			</div>
 			</body>
 			</html>';
-		
-		//close connection
-		$this->databaseHandler->closeConnection();
 		
 		return $pagina;
 	}
