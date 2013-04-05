@@ -99,41 +99,46 @@ class FrameWorkBackend
 			//laad frontend CONTENT
 			if($this->page['page_menu'] == 'manage_pages')
 			{
+				$content .= '<div id="content-page">
+							 <h3>Current active pages</h3>
+							 <a href="?page='. $page .'&action=new">
+							 <img src="images/icons/add.png"/> Nieuwe pagina</a>';
 				
-				$query = 'SELECT content_id,content_menu, content_text FROM content';
+				$query = 'SELECT content_id,content_menu FROM content';
 				$result = $this->databaseHandler->executeQuery($query);
 									
 				//table weergeven met alle pages
 				$content .= '<table>';
-				$content .= '<tr><th>Settings</th><th>#</th><th>Page menu-item</th><th>Page text</th></tr>';
+				$content .= '<tr><th>Settings</th><th>#</th><th>Page menu-item</th></tr>';
 				for($i = 0; $i < count($result); $i++)
 				{
 					$content .= '<tr>';
-					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['content_id'] .'"><img src="images/icons/delete.png"/> Edit<a> <a href=""><img src="images/icons/table_edit.png"/>Delete</a></td>';
-					$content .= '<td>'. ($i+1) .'</td><td>'. $this->getMenuTitle($result[$i]['content_menu']) .'</td><td>'. $result[$i]['content_text'] .'</td>';
+					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['content_id'] .'"><img src="images/icons/table_edit.png"/> Edit<a> <a href="?page='. $page .'&action=delete&row='. $result[$i]['content_id'] .'"><img src="images/icons/delete.png"/>Delete</a></td>';
+					$content .= '<td>'. ($i+1) .'</td><td>'. $this->getMenuTitle($result[$i]['content_menu']) .'</td>';
 					$content .= '</tr>';
 				}
-				$content .= '</table>';
+				$content .= '</table></div>';
 			}
 			//laad frontend USERS
 			else if($this->page['page_menu'] == 'manage_accounts')
 			{
-				//TODO
-			}
-			
-			/*check voor edit pagina
-			$row = $this->getFormVariable('row');
-			$tabel = $this->getFormVariable('tabel');
-			$columns = $this->getColumns($tabel);
+				$content .= '<div id="content-page"><a href="?page='. $page .'&action=new"><img src="images/icons/add.png"/> Nieuwe pagina</a>';
 				
-			$query = 'SELECT * FROM '. $tabel .' WHERE '. $columns[0] .'=' . $row;
-				
-			$param = array(':' => $value);
-			$result = $this->databaseHandler->executeQuery($query, $param);
-				
-			$content .= $this->displayEditPage($result, $tabel, $columns, $row);*/
-			
-			
+				$query = 'SELECT user_id, username FROM users';
+				$result = $this->databaseHandler->executeQuery($query);
+									
+				//table weergeven met alle pages
+				$content .= '<table>';
+				$content .= '<tr><th>Settings</th><th>#</th><th>User</th></tr>';
+				for($i = 0; $i < count($result); $i++)
+				{
+					$content .= '<tr>';
+					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['user_id'] .'"><img src="images/icons/table_edit.png"/> Edit<a> <a href="?page='. $page .'&action=delete&row='. $result[$i]['user_id'] .'"><img src="images/icons/delete.png"/>Delete</a></td>';
+					$content .= '<td>'. ($i+1) .'</td><td>'. $this->getMenuTitle($result[$i]['username']) .'</td>';
+					$content .= '</tr>';
+				}
+				$content .= '</table></div>';
+			}		
 		}
 		else
 		{
@@ -174,24 +179,30 @@ class FrameWorkBackend
 		
 		switch($action)
 		{
-			case 'insert': 
+			case 'new': 
 			{
-				$actionHandler->newRow($page); break;
+				$this->content .= $this->displayEditPage($page, $action); break;
+				
+			}
+			case 'load':
+			{
+					$row = $this->getFormVariable('row');
+					$this->content .= $this->displayEditPage($page, $action, $row); break;
 			}
 			case 'delete': 
 			{
 				$row = $this->getFormVariable('row');
 				$actionHandler->deleteRow($page, $row); break;
 			}
-			case 'load':
-			{
-				$row = $this->getFormVariable('row'); 
-				$this->content .= $this->displayEditPage($page, $row); break;
-			}
-			case 'edit':
+
+			case 'update':
 			{
 				$row = $this->getFormVariable('row');
 				$actionHandler->updateRow($page, $row); break;
+			}
+			case 'insert':
+			{
+				$actionHandler->newRow($page); break;
 			}
 		}
 	}
@@ -230,41 +241,63 @@ class FrameWorkBackend
 		}
 	}
 	
-	public function displayEditPage($page, $row)
+	public function displayEditPage($page, $action, $row=null)
 	{
 		$tabel = $this->getTabel($page);
 		$columns = $this->getColumns($tabel);
 		
 		$content = '<div id="edit-page">
-					<h3>Tabel "'. $tabel .'"</h3>
-					<h4>Row "'. $row .'"</h4>
-					<form action="index.php" method="get">';
+					<h3>Tabel "'. $tabel .'"</h3>';
+		if(empty($row))
+			$content .= '<h4>Row "new"</h4>';
+		else
+			$content .= '<h4>Row "'. $row .'"</h4>';
+		$content .= '<form action="index.php" method="POST">';
 		
-		$param = array(':id' => $row);
-		$query = 'SELECT * FROM '. $tabel .' WHERE '. $columns[0] .'=:id';
-		$result = $this->databaseHandler->executeQuery($query, $param);
-		
-		echo '<pre>';
-		print_r($result);
-		echo '</pre>';
-		
-		for($i = 0; $i < count($result[0])/2; $i++)
+		if($action == 'load')
 		{
-			$content .= '<label for="'. $columns[$i] .'">Change '. $columns[$i] .'</label>';
-			if($columns[$i] != 'content_text')
-				$content .= '<input name="'. $columns[$i] .'" value="'. $result[0][$columns[$i]] .'"/>';
-			else
-				$content .= '<textarea name="'. $columns[$i] .'" >'. $result[0][$columns[$i]] .'</textarea>
-							 <script>CKEDITOR.replace( "content_text" );</script>';
+			$param = array(':id' => $row);
+			$query = 'SELECT * FROM '. $tabel .' WHERE '. $columns[0] .'=:id';
+			$result = $this->databaseHandler->executeQuery($query, $param);
 			
+			for($i = 0; $i < count($result[0])/2; $i++)
+			{
+				$content .= '<label for="'. $columns[$i] .'">Change '. $columns[$i] .'</label>';
+				if($i == 0)
+					$content .= '<input name="'. $columns[$i] .'" value="'.$result[0][$columns[$i]].'" disabled/>';
+				else if($columns[$i] != 'content_text')
+					$content .= '<input name="'. $columns[$i] .'" value="'. $result[0][$columns[$i]] .'"/>';
+				else
+					$content .= '<textarea name="'. $columns[$i] .'" >'. $result[0][$columns[$i]] .'</textarea>
+								 <script>CKEDITOR.replace( "content_text" );</script>';
+			}
+		}
+		//new..
+		else
+		{
+			for($i = 0; $i < count($columns); $i++)
+			{
+				$content .= '<label for="'. $columns[$i] .'">Change '. $columns[$i] .'</label>';
+				
+				if($i == 0)
+					$content .= '<input name="'. $columns[$i] .'" value="" disabled/>';
+				else if($columns[$i] != 'content_text')
+					$content .= '<input name="'. $columns[$i] .'" value=""/>';
+				else
+					$content .= '<textarea name="'. $columns[$i] .'" ></textarea>
+							 <script>CKEDITOR.replace( "content_text" );</script>';
+			}
 		}
 
 		//buttons
-		$content .= '<input type="submit" name="submit" value="Wijzig"/>
-					 <input type="hidden" name="row" value="'. $row .'"/>
-					 <input type="hidden" name="action" value="edit"/>
-					 <input type="hidden" name="page" value="'. $page .'"/>';
+		$content .= '<input type="submit" class="submit" name="submit" value="Wijzig"/>
+					 <input type="hidden" name="row" value="'. $row .'"/>';
+		if($action == 'load')
+			$content .= '<input type="hidden" name="action" value="update"/>';	
+		else
+			$content .= '<input type="hidden" name="action" value="insert"/>';
 		
+		$content .= '<input type="hidden" name="page" value="'. $page .'"/>';
 		$content .= '</form></div>';
 		
 		return $content;
@@ -276,7 +309,7 @@ class FrameWorkBackend
 			<html>
 			<head>
 				<title>Login</title>
-				<link href="css/default.css" rel="stylesheet" type="text/css" />
+				<link href="css/login.css" rel="stylesheet" type="text/css" />
 			</head>
 			<body>
 			<div class="logo">
@@ -331,7 +364,7 @@ class FrameWorkBackend
 				<div id="container">
 					<div id="header">'. $this->header .'</div>
 					<div id="content">' . $this->content . '</div>
-					<div id="footer">Logged in as: "' . $_SESSION['username'] . '"</div>
+					<div id="footer">Logged in as: ' . $_SESSION['username'] . '</div>
 				</div>
 				
 			</div>

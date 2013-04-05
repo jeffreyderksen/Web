@@ -46,7 +46,7 @@ class Login extends FrameWorkBackend
 		$values = array(':username' => $username, ':password' => $password);
 		$result = $this->databaseHandler->executeQuery($query, $values);
 		
-		if(is_array($result[0]))
+		if(!empty($result[0]) && is_array($result[0]))
 		{
 			$usernameData = $result[0]['username'];
 			$passwordData = $result[0]['password'];

@@ -1,7 +1,11 @@
 body
 {
 	font-family: sans-serif;
-	color: rgb(71, 71, 71);
+	
+}
+a
+{
+	color: rgb(0,51,171);
 }
 table
 {
@@ -12,9 +16,13 @@ table th, td, tr
 {
 	border: 1px solid;
 }
-table tr:hover
+table tr
 {
 	background: rgb(0, 120, 255);
+}
+table tr:hover
+{
+	background: rgb(0, 180, 255);
 }
 table textarea
 {
@@ -54,6 +62,16 @@ table textarea
 	margin-top: 57px;
 	padding: 10px;
 }
+#content
+{
+	padding: 10px;
+}
+#content-page
+{
+	border: 1px solid;
+	padding: 10px;
+	background: rgb(0, 180, 209);
+}
 .logo
 {
 	text-align: center;
@@ -65,10 +83,19 @@ table textarea
 /* EDIT PAGE */
 #edit-page
 {
+	border: 1px solid;
+	padding: 10px;
+	background: rgb(0, 180, 209);
+	border-bottom: 2px solid;
+	margin-bottom: 10px;
+}
+#edit-page a
+{
+	color: blue;
 }
 #edit-page form
 {
-	width: 730px;
+	width: 710px;
 }
 #edit-page input
 {
@@ -79,6 +106,10 @@ table textarea
 #edit-page label
 {
 	width: 200px;
+}
+#edit-page .submit
+{
+	margin: 10px;
 }
 /*LOGIN FORM*/
 .error
@@ -138,12 +169,13 @@ table textarea
 	padding:5px 18px;
 	text-decoration:none;
 	text-shadow:1px 1px 0px #528ecc;
-}.submit:hover {
+}
+#loginform.submit:hover {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0083c0), color-stop(1, #79bbff) );
 	background:-moz-linear-gradient( center top, #0083c0 5%, #79bbff 100% );
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#0083c0', endColorstr='#79bbff');
 	background-color:#0083c0;
-}.submit:active {
+}#loginform.submit:active {
 	position:relative;
 	top:1px;
 }

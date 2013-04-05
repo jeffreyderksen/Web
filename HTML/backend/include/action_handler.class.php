@@ -11,32 +11,42 @@ class ActionHandler extends FrameWorkBackend
 		
 		$tabel = $this->getTabel($page);
 		$columns = $this->getColumns($page);
-		$values = $this->getUpdateValuesArray($columns);
+
+		$queryString = $this->getUpdateString($columns);
 		
-		$query = 'UPDATE '. $tabel . ' SET ';
-		for($i = 0; $i < count($values); $i++)
-		{
-			//SET column1=value, column2=value2,...WHERE some_column=some_value
-			$query .= $columns[$i] . '= "'. $values[$i] . '"';
-			if($i != count($values)-1)
-				$query .= ', ';
-		}
-		$query .= ' WHERE '. $columns[0] .'="'. $id .'"';
-		echo $query . '</br>';
-		$this->databaseHandler->updateQuery($query);
+		$query = 'UPDATE '. $tabel . ' SET ' . $queryString . ' WHERE ' . $columns[0] . '=' . $id;
+		$keys = $this->getParamArray($page);
+		$param = $this->getUpdateParam($keys, $columns);
+		echo $query;
+		
+		$this->databaseHandler->executeQuery($query, $param);
+
 	}
 	
 	public function newRow($page)
 	{
 		$tabel = $this->getTabel($page);
-			
-		$array = $this->getColumns($page);
-		$columnsString = $this->getColumnsString($array,false);
-		$values = $this->getValuesString($array);
+		$columns = $this->getColumns($page);
 		
-		$query = 'INSERT INTO '. $tabel .' (' . $columnsString . ') VALUES ('. $values .')';
-		echo $query . "</br>";
-		$this->databaseHandler->updateQuery($query);
+		//content_menu,content_title.....
+		$columnString = $this->getColumnsString($columns, false);
+		
+		//'key' => ''
+		$keys = $this->getParamArray($page);
+		//:content_menu, :content_title
+		$valueString = $this->getValuesString($this->getColumns($page));
+		
+		//vul array met keys en values
+		$param = $this->getUpdateParam($keys, $columns);
+		
+		echo '<pre>';
+		print_r($param);
+		echo '</pre>';
+		
+		$query = 'INSERT into '. $tabel .' ('. $columnString .') VALUES('. $valueString .')';
+		echo $query;
+		
+		$this->databaseHandler->executeQuery($query, $param);
 	}
 	
 	public function deleteRow($page, $id)
@@ -48,9 +58,10 @@ class ActionHandler extends FrameWorkBackend
 		$columns = $this->getColumns($page);
 		
 		//execute
-		$query = 'DELETE FROM '. $tabel . ' WHERE ' . $columns[0] . '=' . $id;
+		$query = 'DELETE FROM '. $tabel . ' WHERE ' . $columns[0] . '=:id';
+		$param = array(':id' => $id);
 		echo $query . "</br>";
-		$this->databaseHandler->executeQuery($query, false);
+		$this->databaseHandler->executeQuery($query,$param);
 	}
 	
 	public function getTabel($page)
@@ -71,23 +82,32 @@ class ActionHandler extends FrameWorkBackend
 		}
 	}
 	
-	private function getColumnsString($array, $primarykey)
+	public function getParamArray($page)
 	{
-		$columns = '';
-		for($i = 0; $i < count($array); $i++)
+		switch($page)
+		{
+			case 'manage_pages' : return array(':content_menu' => '', ':content_title' => '', ':content_header' => '', ':content_footer' => '', ':content_text' => '');
+			case 'manage_accounts' : return array(':username' => '', ':password' => '', ':email' => '', ':admin' => '');
+		}
+	}
+	
+	private function getColumnsString($columns, $primarykey)
+	{
+		$columnsString = '';
+		for($i = 0; $i < count($columns); $i++)
 		{
 			//geen primarykey(id)
 			if($i != 0 && !$primarykey)
-				$columns .= $array[$i];
+				$columnsString .= $columns[$i];
 			//wel.....
 			else if($i == 0 && $primarykey)
-				$columns .= $array[$i];
-			if($i != count($array)-1 && $i != 0)
-				$columns .= ',';
-			else if($i != count($array)-1 && $primarykey)
-				$columns .= ',';
+				$columnsString .= $columns[$i];
+			if($i != count($columns)-1 && $i != 0)
+				$columnsString .= ',';
+			else if($i != count($columns)-1 && $primarykey)
+				$columnsString .= ',';
 		}
-		return $columns;
+		return $columnsString;
 	}
 	
 	private function getValuesString($array)
@@ -96,7 +116,7 @@ class ActionHandler extends FrameWorkBackend
 		//niet met 0 beginnen! Dat is het ID(AUTO INCREMENT)
 		for($i = 1; $i < count($array); $i++)
 		{			
-			$values .= '0';
+			$values .= ':' . $array[$i];
 			if($i != count($array)-1)
 				$values .= ',';
 		}
@@ -107,7 +127,7 @@ class ActionHandler extends FrameWorkBackend
 	{
 		$valuesString = '';
 		
-		for($i = 0; $i < count($columns); $i++)
+		for($i = 1; $i < count($columns); $i++)
 		{
 			$value = $this->getFormVariable($columns[$i]);
 			$valuesString .= $value;
@@ -119,20 +139,40 @@ class ActionHandler extends FrameWorkBackend
 		return $valuesString;
 	}
 	
-	private function getUpdateValuesArray($columns)
+	private function getUpdateString($columns)
 	{
-		$values = array();
-	
-		for($i = 0; $i < count($columns); $i++)
+		//UPDATE table_name SET column1=value, column2=value2,...
+		$queryString = '';
+		
+		for($i = 1; $i < count($columns); $i++)
 		{
-			if($columns[$i] == 'password')
-				array_push($values, sha1($this->getFormVariable($columns[$i])));
-			else
-				array_push($values, $this->getFormVariable($columns[$i]));
+			$value = ':' . $columns[$i];
+			$queryString .= $columns[$i]. '=' . $value;
+			
+			if($i != count($columns)-1)
+				$queryString .= ',';
 		}
-	
-		return $values;
+		
+		return $queryString;
 	}
 	
-	
+	private function getUpdateParam($keysArray, $columns)
+	{
+		$keys = array_keys($keysArray);
+		
+		//remove first column(ID)!
+		unset($columns[0]);
+		$columns = array_values($columns);
+		
+		for($i = 0; $i < count($keysArray); $i++)
+		{
+			$value = $this->getFormVariable($columns[$i]);
+			if(!empty($value))
+				$keysArray[$keys[$i]] = $value;			
+			else
+				$keysArray[$keys[$i]] = 'leeg';
+		}
+		
+		return $keysArray;
+	}
 }
