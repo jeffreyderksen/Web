@@ -120,9 +120,9 @@ class FrameWorkBackend
 				$content .= '</table></div>';
 			}
 			//laad frontend USERS
-			else if($this->page['page_menu'] == 'manage_accounts')
+			else if($this->page['page_menu'] == 'manage_members')
 			{
-				$content .= '<div id="content-page"><a href="?page='. $page .'&action=new"><img src="images/icons/add.png"/> Nieuwe pagina</a>';
+				$content .= '<div id="content-page"><a href="?page='. $page .'&action=new"><img src="images/icons/add.png"/> Nieuwe member</a>';
 				
 				$query = 'SELECT member_id, member_uname FROM member';
 				$result = $this->databaseHandler->executeQuery($query);
@@ -135,6 +135,26 @@ class FrameWorkBackend
 					$content .= '<tr>';
 					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['member_id'] .'"><img src="images/icons/table_edit.png"/> Edit<a> <a href="?page='. $page .'&action=delete&row='. $result[$i]['member_id'] .'"><img src="images/icons/delete.png"/>Delete</a></td>';
 					$content .= '<td>'. ($i+1) .'</td><td>'. $this->getMenuTitle($result[$i]['member_uname']) .'</td>';
+					$content .= '</tr>';
+				}
+				$content .= '</table></div>';
+			}
+			//laad admin USERS
+			else if($this->page['page_menu'] == 'manage_admins')
+			{
+								$content .= '<div id="content-page"><a href="?page='. $page .'&action=new"><img src="images/icons/add.png"/> Nieuwe admin</a>';
+				
+				$query = 'SELECT admin_id, admin_uname FROM admin_member';
+				$result = $this->databaseHandler->executeQuery($query);
+									
+				//table weergeven met alle pages
+				$content .= '<table>';
+				$content .= '<tr><th>Settings</th><th>#</th><th>User</th></tr>';
+				for($i = 0; $i < count($result); $i++)
+				{
+					$content .= '<tr>';
+					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['admin_id'] .'"><img src="images/icons/table_edit.png"/> Edit<a> <a href="?page='. $page .'&action=delete&row='. $result[$i]['admin_id'] .'"><img src="images/icons/delete.png"/>Delete</a></td>';
+					$content .= '<td>'. ($i+1) .'</td><td>'. $this->getMenuTitle($result[$i]['admin_uname']) .'</td>';
 					$content .= '</tr>';
 				}
 				$content .= '</table></div>';
@@ -230,7 +250,8 @@ class FrameWorkBackend
 		switch($page)
 		{
 			case 'manage_pages' : return 'content';
-			case 'manage_accounts' : return 'member';
+			case 'manage_members' : return 'member';
+			case 'manage_admins' : return 'admin_member';
 		}
 	}
 	private function getColumns($tabel)
@@ -239,6 +260,7 @@ class FrameWorkBackend
 		{
 			case 'content' : return array('content_id', 'content_menu', 'content_title', 'content_text');
 			case 'member' : return array('member_id', 'member_fname', 'member_lname', 'member_uname', 'member_pass','member_email');
+			case 'admin_member' : return array('admin_id', 'admin_fname', 'admin_lname', 'admin_uname', 'admin_pass','admin_email');
 		}
 	}
 	
@@ -364,7 +386,7 @@ class FrameWorkBackend
 				<div id="container">
 					<div id="header">'. $this->header .'</div>
 					<div id="content">' . $this->content . '</div>
-					<div id="footer">Logged in as: ' . $_SESSION['username'] . '</div>
+					<div id="footer">'. $this->footer .'</br><i>Logged in as: ' . $_SESSION['username'] . '</i></div>
 				</div>
 				
 			</div>

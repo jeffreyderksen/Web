@@ -69,7 +69,8 @@ class ActionHandler extends FrameWorkBackend
 		switch($page)
 		{
 			case 'manage_pages' : return 'content';
-			case 'manage_accounts' : return 'member';
+			case 'manage_members' : return 'member';
+			case 'manage_admins' : return 'admin_member';
 		}
 	}
 	
@@ -79,6 +80,7 @@ class ActionHandler extends FrameWorkBackend
 		{
 			case 'content' : return array('content_id', 'content_menu', 'content_title', 'content_text');
 			case 'member' : return array('member_id', 'member_fname', 'member_lname', 'member_uname', 'member_pass','member_email');
+			case 'admin_member' : return array('admin_id', 'admin_fname', 'admin_lname', 'admin_uname', 'admin_pass','admin_email');
 		}
 	}
 	
@@ -88,6 +90,7 @@ class ActionHandler extends FrameWorkBackend
 		{
 			case 'manage_pages' : return array(':content_menu' => '', ':content_title' => '', ':content_text' => '');
 			case 'manage_accounts' : return array(':member_fname' => '', ':member_lname' => '', ':member_uname' => '', ':member_pass' => '', ':member_email' => '');
+			case 'manage_admins' : return array(':admin_fname' => '', ':admin_lname' => '', ':admin_uname' => '', ':admin_pass' => '', ':admin_email' => '');
 		}
 	}
 	
@@ -166,7 +169,10 @@ class ActionHandler extends FrameWorkBackend
 		
 		for($i = 0; $i < count($keysArray); $i++)
 		{
-			$value = $this->getFormVariable($columns[$i]);
+			if($columns[$i] == 'admin_pass' || 'member_pass')
+				$value = sha1($this->getFormVariable($columns[$i]));
+			else
+				$value = $this->getFormVariable($columns[$i]);
 			if(!empty($value))
 				$keysArray[$keys[$i]] = $value;			
 			else
