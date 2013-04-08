@@ -10,7 +10,7 @@ class ActionHandler extends FrameWorkBackend
 			return;
 		
 		$tabel = $this->getTabel($page);
-		$columns = $this->getColumns($page);
+		$columns = $this->getColumns($tabel);
 
 		$queryString = $this->getUpdateString($columns);
 		
@@ -26,7 +26,7 @@ class ActionHandler extends FrameWorkBackend
 	public function newRow($page)
 	{
 		$tabel = $this->getTabel($page);
-		$columns = $this->getColumns($page);
+		$columns = $this->getColumns($tabel);
 		
 		//content_menu,content_title.....
 		$columnString = $this->getColumnsString($columns, false);
@@ -69,16 +69,16 @@ class ActionHandler extends FrameWorkBackend
 		switch($page)
 		{
 			case 'manage_pages' : return 'content';
-			case 'manage_accounts' : return 'users';
+			case 'manage_accounts' : return 'member';
 		}
 	}
 	
-	public function getColumns($page)
+	public function getColumns($tabel)
 	{
-		switch($page)
+		switch($tabel)
 		{
-			case 'manage_pages' : return array('content_id', 'content_menu', 'content_title', 'content_header', 'content_footer', 'content_text');
-			case 'manage_accounts' : return array('user_id', 'username', 'password', 'email', 'admin');
+			case 'content' : return array('content_id', 'content_menu', 'content_title', 'content_text');
+			case 'member' : return array('member_id', 'member_fname', 'member_lname', 'member_uname', 'member_pass','member_email');
 		}
 	}
 	
@@ -86,8 +86,8 @@ class ActionHandler extends FrameWorkBackend
 	{
 		switch($page)
 		{
-			case 'manage_pages' : return array(':content_menu' => '', ':content_title' => '', ':content_header' => '', ':content_footer' => '', ':content_text' => '');
-			case 'manage_accounts' : return array(':username' => '', ':password' => '', ':email' => '', ':admin' => '');
+			case 'manage_pages' : return array(':content_menu' => '', ':content_title' => '', ':content_text' => '');
+			case 'manage_accounts' : return array(':member_fname' => '', ':member_lname' => '', ':member_uname' => '', ':member_pass' => '', ':member_email' => '');
 		}
 	}
 	

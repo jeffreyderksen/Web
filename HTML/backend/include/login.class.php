@@ -36,20 +36,20 @@ class Login extends FrameWorkBackend
 	}
 	
 	public function setAuthentication($username, $password)
-	{
+	{		
 		//SHA1 versleuteling
 		if(strlen($password) != 40)
 			return false;
 	
 		//database connectie
-		$query = 'SELECT username, password FROM users WHERE username=:username && password=:password';
-		$values = array(':username' => $username, ':password' => $password);
+		$query = 'SELECT admin_uname, admin_pass FROM admin_member WHERE admin_uname=:admin_uname && admin_pass=:admin_pass';
+		$values = array(':admin_uname' => $username, ':admin_pass' => $password);
 		$result = $this->databaseHandler->executeQuery($query, $values);
 		
 		if(!empty($result[0]) && is_array($result[0]))
 		{
-			$usernameData = $result[0]['username'];
-			$passwordData = $result[0]['password'];
+			$usernameData = $result[0]['admin_uname'];
+			$passwordData = $result[0]['admin_pass'];
 			
 			if($username == $usernameData && $password == $passwordData)
 			{

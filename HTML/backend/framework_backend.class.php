@@ -124,7 +124,7 @@ class FrameWorkBackend
 			{
 				$content .= '<div id="content-page"><a href="?page='. $page .'&action=new"><img src="images/icons/add.png"/> Nieuwe pagina</a>';
 				
-				$query = 'SELECT user_id, username FROM users';
+				$query = 'SELECT member_id, member_uname FROM member';
 				$result = $this->databaseHandler->executeQuery($query);
 									
 				//table weergeven met alle pages
@@ -133,8 +133,8 @@ class FrameWorkBackend
 				for($i = 0; $i < count($result); $i++)
 				{
 					$content .= '<tr>';
-					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['user_id'] .'"><img src="images/icons/table_edit.png"/> Edit<a> <a href="?page='. $page .'&action=delete&row='. $result[$i]['user_id'] .'"><img src="images/icons/delete.png"/>Delete</a></td>';
-					$content .= '<td>'. ($i+1) .'</td><td>'. $this->getMenuTitle($result[$i]['username']) .'</td>';
+					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['member_id'] .'"><img src="images/icons/table_edit.png"/> Edit<a> <a href="?page='. $page .'&action=delete&row='. $result[$i]['member_id'] .'"><img src="images/icons/delete.png"/>Delete</a></td>';
+					$content .= '<td>'. ($i+1) .'</td><td>'. $this->getMenuTitle($result[$i]['member_uname']) .'</td>';
 					$content .= '</tr>';
 				}
 				$content .= '</table></div>';
@@ -161,7 +161,8 @@ class FrameWorkBackend
 			$menu .= '<a href="?page='. $menuItems[$i]['page_menu'] . '">'. $this->getMenuTitle($menuItems[$i]['page_menu']) .'</a>';
 			$menu .= '</li>';
 		}
-		$menu .= '<li><a href="?action=logout">Logout</a></li>';
+		$menu .= '<li><a href="?action=logout">Logout</a></li>
+				  <li><a href="../">Site bekijken</a></li>';
 		$menu .= '</ul>';
 		
 		$this->menu = $menu;
@@ -229,15 +230,15 @@ class FrameWorkBackend
 		switch($page)
 		{
 			case 'manage_pages' : return 'content';
-			case 'manage_accounts' : return 'users';
+			case 'manage_accounts' : return 'member';
 		}
 	}
 	private function getColumns($tabel)
 	{
 		switch($tabel)
 		{
-			case 'content' : return array('content_id', 'content_menu', 'content_title', 'content_header', 'content_footer', 'content_text');
-			case 'users' : return array('user_id', 'username', 'password', 'email', 'admin');
+			case 'content' : return array('content_id', 'content_menu', 'content_title', 'content_text');
+			case 'member' : return array('member_id', 'member_fname', 'member_lname', 'member_uname', 'member_pass','member_email');
 		}
 	}
 	
@@ -258,6 +259,7 @@ class FrameWorkBackend
 		{
 			$param = array(':id' => $row);
 			$query = 'SELECT * FROM '. $tabel .' WHERE '. $columns[0] .'=:id';
+			echo $query;
 			$result = $this->databaseHandler->executeQuery($query, $param);
 			
 			for($i = 0; $i < count($result[0])/2; $i++)
@@ -325,8 +327,6 @@ class FrameWorkBackend
 			
 					<label for="password" >Password:</label>
 					<input type="password" name="password" id="password" maxlength="50" />
-							
-					<a class="ww-link" href="#">Wachtwoord vergeten?</a>
 							
 					<input type="submit" class="submit" name="loginbutton" value="Login" />
 					<input type="hidden" name="page" value="dashboard" />
