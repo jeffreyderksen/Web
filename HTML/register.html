@@ -46,7 +46,7 @@
 		
 		<div id="content">
 			<div class=formdiv>
-				<form action="index.php" method="post">
+				<form action="index.php" method="post" id="signup">
 					<table>
 						<tr>
 							<td colspan=2><h3>Personal Settings</h3></td>
@@ -122,11 +122,11 @@
 						</tr>
 						<tr>
 							<td><label>Username:</label></td>
-							<td><input type="text" name="uname" /></td>
+							<td><input type="text" name="uname" id="uname" onchange="check()"/><div id="status">Woot</div></td>
 						</tr>
 						<tr>
 							<td><label>Password:</label></td>
-							<td><input type="password" name="pword" /></td>
+							<td><input type="password" name="pword" id="pword"/></td>
 						</tr>
 						<tr>
 							<td><label>Confirm Password:</label></td>

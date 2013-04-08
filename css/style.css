@@ -133,6 +133,11 @@ h1 {
 .formdiv .button {
 	margin: 2%;
 }
+/*This are the settings for the error messages for the forms*/
+.error {
+	color: red;
+}
+
 
 /*This is the layout for the categorie page*/
 #games {

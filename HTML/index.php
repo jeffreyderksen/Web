@@ -21,6 +21,11 @@ $htmlPage->setMenu();
 
 $action = $htmlPage->getFormVariable('action');
 
+if(isset($_GET['un']))
+{
+	echo 'test';
+}	
+
 if($page == 'high_scores')
 {
 	if($user->isAuth())
@@ -36,6 +41,11 @@ else
 {
 	$htmlPage->setTitle($page);
 	$htmlPage->setContent($page);
+}
+
+if($page == 'register')
+{
+	$htmlPage->setJScript('formvalidate.js', 'checkUsername.js');
 }
 
 if($action == 'register')

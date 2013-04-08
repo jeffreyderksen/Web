@@ -91,19 +91,15 @@ class ContentPage
 		$this->cssFile = $value;
 	}
 	
-	public function setJScript($value)
+	public function setJScript($value,$val)
 	{
-		$this->jScript = $value;
+		$this->jScript = 	'<script src="../javascript/'.$value.'"></script>
+							<script src="../javascript/'.$val.'"></script>';
 	}
 	
 	public function addUser($fn,$ln,$un,$pw,$em)
 	{
 		$this->sqlConnection->addUserQuery($fn,$ln,$un,$pw,$em);
-	}
-	
-	public function setUser($value)
-	{
-		
 	}
 	
 	public function getFormVariable($value)
@@ -131,6 +127,8 @@ class ContentPage
 					<meta name=description content="beschrijving van de webpagina">
 					<meta name=keywords content="trefwoorden,gescheiden, door, komma\'s">
 					<link rel=stylesheet href="'.$this->cssFile.'">
+					<script src="../javascript/jquery-1.6.3.min.js"></script>
+					<script src="../javascript/jquery.validate.min.js"></script>
 					'.$this->jScript.'
 					<title>'.$this->title.'</title>
 					</head>

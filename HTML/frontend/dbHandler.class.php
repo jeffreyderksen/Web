@@ -7,7 +7,8 @@ class dbHandler
 			'content' => 'SELECT content_text FROM content WHERE content_type=?',
 			'menu' => 'SELECT menu_title, menu_item FROM menu',
 			'user' => 'SELECT member_uname FROM member WHERE member_uname=?',
-			'pass' => 'SELECT member_pass FROM member WHERE member_uname=?');
+			'pass' => 'SELECT member_pass FROM member WHERE member_uname=?'
+	);
 	
 	public function openConnection($host,$user,$password,$database)
 	{
@@ -48,6 +49,13 @@ class dbHandler
 			{
 				$result = $this->dbHandle->query($this->queries[$query]);
 				return $result;
+			} 
+			else 
+			{
+				
+				$result = $this->dbHandle->query($query);
+				return $result->num_rows;
+				
 			}
 			
 			
@@ -73,6 +81,19 @@ class dbHandler
 					VALUES("'.$fn.'","'.$ln.'","'.$un.'","'.$pw.'","'.$em.'")';
 		
 		$this->dbHandle->query($result);
+	}
+	
+	public function checkUserName($username)
+	{
+		$query = 'SELECT member_uname FROM member WHERE member_uname = "'.$username.'"';
+		$result = $this->executeQuery($query);
+		if($result==0)
+		{
+			return 'This username is available';
+		} else 
+		{
+			return 'This username is already in use';
+		}
 	}
 	
 	//close connection
