@@ -1,5 +1,5 @@
 <?php
-include_once('include/database_handler.class.php');
+include_once('../include/database_handler.class.php');
 
 class Config
 {

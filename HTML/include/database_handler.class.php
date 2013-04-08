@@ -3,11 +3,6 @@ class DatabaseHandler
 {
 	private $connection;
 	
-	private $menu_items = array(
-			'page_type' => array(),
-			'menu_item' => array(),
-	);
-	
 	public function openConnection($host, $user, $pass)
 	{
 		try

@@ -3,8 +3,8 @@
 session_start();
 
 include_once('framework_backend.class.php');
-include_once('include/login.class.php');
-include_once('include/config.class.php');
+include_once('../include/login.class.php');
+include_once('../include/config.class.php');
 
 $framework = new FrameWorkBackend();
 $config = new Config();

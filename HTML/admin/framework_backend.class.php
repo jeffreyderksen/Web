@@ -1,6 +1,6 @@
 <?php
-include_once('include/database_handler.class.php');
-include_once('include/action_handler.class.php');
+include_once('../include/database_handler.class.php');
+include_once('../include/action_handler.class.php');
 
 class FrameWorkBackend
 {

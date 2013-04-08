@@ -25,7 +25,9 @@ class ContentPage
 	
 	public function setMenu()
 	{
-		$menu_items = $this->sqlConnection->executeQuery('menu');
+		$query = '';
+		$param = array();
+		$menu_items = $this->sqlConnection->executeQuery($query, $param);
 		
 		$result = '';
 		
