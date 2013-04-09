@@ -15,8 +15,8 @@ class Login extends FrameWorkBackend
 			{
 				return '<img class="error-oops" src="images/oops.png" alt="error"></br> Oops, it looks like you have a bad memory..';
 			}
-			echo sha1($password);
-			$this->setAuthentication($username, sha1($password));
+
+			return $this->setAuthentication($username, sha1($password));
 		}
 		else if($action == 'logout')
 		{
@@ -59,7 +59,7 @@ class Login extends FrameWorkBackend
 			}
 		}
 			
-		return false;
+		return 'Wrong username or password';
 	}
 	
 	public function isAuthenticated()

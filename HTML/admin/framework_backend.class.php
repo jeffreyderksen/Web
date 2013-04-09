@@ -182,7 +182,7 @@ class FrameWorkBackend
 			$menu .= '</li>';
 		}
 		$menu .= '<li><a href="?action=logout">Logout</a></li>
-				  <li><a href="../">Site bekijken</a></li>';
+				  <li><a href="../" target="_blank">Site bekijken</a></li>';
 		$menu .= '</ul>';
 		
 		$this->menu = $menu;
@@ -277,6 +277,7 @@ class FrameWorkBackend
 			$content .= '<h4>Row "'. $row .'"</h4>';
 		$content .= '<form action="index.php" method="POST">';
 		
+		//gegevens ophalen
 		if($action == 'load')
 		{
 			$param = array(':id' => $row);
@@ -287,13 +288,34 @@ class FrameWorkBackend
 			for($i = 0; $i < count($result[0])/2; $i++)
 			{
 				$content .= '<label for="'. $columns[$i] .'">Change '. $columns[$i] .'</label>';
+				//id - disabled
 				if($i == 0)
 					$content .= '<input name="'. $columns[$i] .'" value="'.$result[0][$columns[$i]].'" disabled/>';
-				else if($columns[$i] != 'content_text')
-					$content .= '<input name="'. $columns[$i] .'" value="'. $result[0][$columns[$i]] .'"/>';
-				else
+				//ajax oninput ..
+				else if($columns[$i] == 'content_menu')
+				{
+					$content .= '<input id="'. $columns[$i] .'" name="'. $columns[$i] .'" value="'.$result[0][$columns[$i]].'" oninput="checkPageExist()" autocomplete="off"/>';
+					$content .= '<span id="validation-text"></span>';
+				}
+				else if($columns[$i] == 'member_uname')
+				{
+					$content .= '<input id="'. $columns[$i] .'" name="'. $columns[$i] .'" value="'.$result[0][$columns[$i]].'" oninput="checkUsername()" autocomplete="off"/>';
+					$content .= '<span id="validation-text"></span>';
+				}
+				else if($columns[$i] == 'admin_uname')
+				{
+					$content .= '<input id="'. $columns[$i] .'" name="'. $columns[$i] .'" value="'.$result[0][$columns[$i]].'" oninput="checkAdminUsername()" autocomplete="off"/>';
+					$content .= '<span id="validation-text"></span>';
+				}
+				//textarea..
+				else if($columns[$i] == 'content_text')
+				{
 					$content .= '<textarea name="'. $columns[$i] .'" >'. $result[0][$columns[$i]] .'</textarea>
 								 <script>CKEDITOR.replace( "content_text" );</script>';
+				}
+				//normaal
+				else
+					$content .= '<input name="'. $columns[$i] .'" value="'. $result[0][$columns[$i]] .'"/>';
 			}
 		}
 		//new..
@@ -303,23 +325,50 @@ class FrameWorkBackend
 			{
 				$content .= '<label for="'. $columns[$i] .'">Change '. $columns[$i] .'</label>';
 				
+				//id - disabled
 				if($i == 0)
 					$content .= '<input name="'. $columns[$i] .'" value="" disabled/>';
-				else if($columns[$i] != 'content_text')
-					$content .= '<input name="'. $columns[$i] .'" value=""/>';
-				else
+				//ajax content_menu oninput ..
+				else if($columns[$i] == 'content_menu')
+				{
+					$content .= '<input id="'. $columns[$i] .'" name="'. $columns[$i] .'" value="" oninput="checkPageExist()" autocomplete="off"/>';
+					$content .= '<span id="validation-text"></span>';
+				}
+				else if($columns[$i] == 'member_uname')
+				{
+					$content .= '<input id="'. $columns[$i] .'" name="'. $columns[$i] .'" value="" oninput="checkUsername()" autocomplete="off"/>';
+					$content .= '<span id="validation-text"></span>';
+				}
+				else if($columns[$i] == 'admin_uname')
+				{
+					$content .= '<input id="'. $columns[$i] .'" name="'. $columns[$i] .'" value="" oninput="checkAdminUsername()" autocomplete="off"/>';
+					$content .= '<span id="validation-text"></span>';
+				}
+				//textarea
+				else if($columns[$i] == 'content_text')
+				{
 					$content .= '<textarea name="'. $columns[$i] .'" ></textarea>
-							 <script>CKEDITOR.replace( "content_text" );</script>';
+							 	 <script>CKEDITOR.replace( "content_text" );</script>';
+				}
+				//normaal
+				else
+					$content .= '<input name="'. $columns[$i] .'" value=""/>';
 			}
 		}
 
 		//buttons
-		$content .= '<input type="submit" class="submit" name="submit" value="Wijzig"/>
-					 <input type="hidden" name="row" value="'. $row .'"/>';
 		if($action == 'load')
-			$content .= '<input type="hidden" name="action" value="update"/>';	
-		else
-			$content .= '<input type="hidden" name="action" value="insert"/>';
+		{
+			$content .= '<input type="hidden" name="action" value="update"/>
+						 <input type="button" id="button-submit" class="button-submit" name="confirm" onclick="confirmMessage(this)" value="Change"/>
+					 	 <input type="hidden" name="row" value="'. $row .'"/>';
+		}
+		else if($action == 'new')
+		{
+			$content .= '<input type="hidden" name="action" value="insert"/>
+						 <input type="button" id="button-submit" class="button-submit" name="confirm" onclick="confirmMessage(this)" value="New"/>';
+		}
+			
 		
 		$content .= '<input type="hidden" name="page" value="'. $page .'"/>';
 		$content .= '</form></div>';
@@ -374,6 +423,9 @@ class FrameWorkBackend
 				<title>'. $this->title .'</title>
 				<link href="'. $this->cssFile .'" rel="stylesheet" type="text/css" />
 				<script src="_js/ckeditor/ckeditor.js"></script>
+				<script src="_js/check.js"></script>	
+				<script src="_js/confirm.js"></script>		
+				<script src="_js/jquery-1.6.3.min.js"></script>
 			</head>
 			<body>
 			<div id="wrap">

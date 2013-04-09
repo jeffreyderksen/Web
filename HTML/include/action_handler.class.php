@@ -25,6 +25,20 @@ class ActionHandler extends FrameWorkBackend
 	
 	public function newRow($page)
 	{
+		if($page = 'manage_pages')
+		{
+			$get = $_POST["content_menu"];
+			echo 'post ' . $get;
+			
+			if(!empty($get))
+			{
+				$query = 'SELECT content_menu FROM content WHERE content_menu=:content_menu';
+				$param = array(':content_menu' => $get);
+				$result = $this->databaseHandler->executeQuery($query, $param);
+				if(!empty($result[0]['content_menu']))
+					return;
+			}
+		}
 		$tabel = $this->getTabel($page);
 		$columns = $this->getColumns($tabel);
 		
@@ -34,7 +48,7 @@ class ActionHandler extends FrameWorkBackend
 		//'key' => ''
 		$keys = $this->getParamArray($page);
 		//:content_menu, :content_title
-		$valueString = $this->getValuesString($this->getColumns($page));
+		$valueString = $this->getValuesString($this->getColumns($tabel));
 		
 		//vul array met keys en values
 		$param = $this->getUpdateParam($keys, $columns);
@@ -55,7 +69,7 @@ class ActionHandler extends FrameWorkBackend
 			return;
 		
 		$tabel = $this->getTabel($page);
-		$columns = $this->getColumns($page);
+		$columns = $this->getColumns($tabel);
 		
 		//execute
 		$query = 'DELETE FROM '. $tabel . ' WHERE ' . $columns[0] . '=:id';
@@ -169,7 +183,7 @@ class ActionHandler extends FrameWorkBackend
 		
 		for($i = 0; $i < count($keysArray); $i++)
 		{
-			if($columns[$i] == 'admin_pass' || 'member_pass')
+			if($columns[$i] == 'admin_pass' || $columns[$i] == 'member_pass')
 				$value = sha1($this->getFormVariable($columns[$i]));
 			else
 				$value = $this->getFormVariable($columns[$i]);

@@ -95,7 +95,7 @@ table textarea
 }
 #edit-page form
 {
-	width: 710px;
+	width: 685px;
 }
 #edit-page input
 {
@@ -107,7 +107,7 @@ table textarea
 {
 	width: 200px;
 }
-#edit-page .submit
+#edit-page .button-submit
 {
 	margin: 10px;
 }
@@ -124,6 +124,11 @@ table textarea
 	text-align: center;
 	width: 150px;
 	heigt: 150px;
+}
+#validation-text p
+{
+	padding: 0;
+	margin: 0;
 }
 #sidebar 
 {
