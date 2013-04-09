@@ -14,7 +14,7 @@ class Config
 		
 		//query
 		$query = 'SELECT * FROM admin_config';
-		$result = $databaseHandler->executeQuery($query);
+		$result = $databaseHandler->executeQuery($query)->fetchAll();
 		
 		if(is_array($result))
 			$this->config = $result[0];

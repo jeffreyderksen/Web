@@ -1,5 +1,5 @@
 <?php
-include_once('database_handler.class.php');
+include_once('../include/database_handler.class.php');
 include_once('framework_backend.class.php');
 
 class ActionHandler extends FrameWorkBackend
@@ -17,28 +17,15 @@ class ActionHandler extends FrameWorkBackend
 		$query = 'UPDATE '. $tabel . ' SET ' . $queryString . ' WHERE ' . $columns[0] . '=' . $id;
 		$keys = $this->getParamArray($page);
 		$param = $this->getUpdateParam($keys, $columns);
-		echo $query;
 		
-		$this->databaseHandler->executeQuery($query, $param);
-
+		if($this->databaseHandler->executeQuery($query, $param))
+			return true;
+		else
+			return false;
 	}
 	
 	public function newRow($page)
 	{
-		if($page = 'manage_pages')
-		{
-			$get = $_POST["content_menu"];
-			echo 'post ' . $get;
-			
-			if(!empty($get))
-			{
-				$query = 'SELECT content_menu FROM content WHERE content_menu=:content_menu';
-				$param = array(':content_menu' => $get);
-				$result = $this->databaseHandler->executeQuery($query, $param);
-				if(!empty($result[0]['content_menu']))
-					return;
-			}
-		}
 		$tabel = $this->getTabel($page);
 		$columns = $this->getColumns($tabel);
 		
@@ -60,7 +47,10 @@ class ActionHandler extends FrameWorkBackend
 		$query = 'INSERT into '. $tabel .' ('. $columnString .') VALUES('. $valueString .')';
 		echo $query;
 		
-		$this->databaseHandler->executeQuery($query, $param);
+		if($this->databaseHandler->executeQuery($query, $param))
+			return true;
+		else
+			return false;
 	}
 	
 	public function deleteRow($page, $id)
@@ -75,7 +65,11 @@ class ActionHandler extends FrameWorkBackend
 		$query = 'DELETE FROM '. $tabel . ' WHERE ' . $columns[0] . '=:id';
 		$param = array(':id' => $id);
 		echo $query . "</br>";
-		$this->databaseHandler->executeQuery($query,$param);
+		
+		if($this->databaseHandler->executeQuery($query, $param))
+			return true;
+		else
+			return false;
 	}
 	
 	public function getTabel($page)

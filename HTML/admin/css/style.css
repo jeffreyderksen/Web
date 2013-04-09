@@ -62,6 +62,16 @@ table textarea
 	margin-top: 57px;
 	padding: 10px;
 }
+#message
+{
+	margin: 0 10px 0 10px;
+}
+#message p
+{
+	background: rgb(100,255,0);
+	border: solid 1px;
+	padding: 10px;
+}
 #content
 {
 	padding: 10px;

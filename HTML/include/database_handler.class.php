@@ -29,6 +29,6 @@ class DatabaseHandler
 		//print_r($menuItems);
 		//echo '</pre>';
 		
-		return $st->fetchAll();
+		return $st;
 	}
 }

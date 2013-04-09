@@ -5,7 +5,7 @@ function checkPageExist()
 
 	if (content_menu != '') 
 	{
-		var url = "http://localhost/web/html/include/check.php?content_menu=";
+		var url = "http://localhost/web/html/admin/include/check.php?content_menu=";
 		url += content_menu;
 		
 		xhr.open("GET", url, true);
