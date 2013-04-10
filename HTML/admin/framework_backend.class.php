@@ -174,7 +174,28 @@ class FrameWorkBackend
 					$content .= '</tr>';
 				}
 				$content .= '</table>';
-			}		
+			}
+			else if($this->page['page_menu'] == 'logs')
+			{
+				$content .= '<h3>Logs</h3>';
+				
+				$query = 'SELECT * FROM admin_logs';
+				$result = $this->databaseHandler->executeQuery($query)->fetchAll();
+					
+				//table weergeven met alle pages
+				$content .= '<table>';
+				$content .= '<tr><th>#</th><th>Action</th><th>Details</th><th>By</th></tr>';
+				for($i = 0; $i < count($result); $i++)
+				{
+					$content .= '<tr>';
+					$content .= '<td>'. ($i+1) .'</td>
+								 <td>'. $result[$i]['log_action'] .'</td>
+								 <td>'. $result[$i]['log_details'] .'</td>
+								 <td>'. $result[$i]['log_who'] .'</td>';
+					$content .= '</tr>';
+				}
+				$content .= '</table>';
+			}
 		}
 		else
 		{

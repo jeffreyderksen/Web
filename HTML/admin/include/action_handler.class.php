@@ -18,8 +18,18 @@ class ActionHandler extends FrameWorkBackend
 		$keys = $this->getParamArray($page);
 		$param = $this->getUpdateParam($keys, $columns);
 		
+		//return succes of error en update logs..
 		if($this->databaseHandler->executeQuery($query, $param))
+		{
+			$param = array( ':log_action' => 'Edit',
+							':log_details' => 'Updated row'. $id . ' in table ' .$tabel,
+							':log_who' => $_SESSION['username']
+			);
+			$query = 'INSERT INTO admin_logs (log_action, log_details, log_who) 
+					VALUES(:log_action, :log_details, :log_who)';
+			$this->databaseHandler->executeQuery($query, $param);
 			return true;
+		}
 		else
 			return false;
 	}
@@ -47,8 +57,18 @@ class ActionHandler extends FrameWorkBackend
 		$query = 'INSERT into '. $tabel .' ('. $columnString .') VALUES('. $valueString .')';
 		echo $query;
 		
+		//return succes of error en update logs..
 		if($this->databaseHandler->executeQuery($query, $param))
+		{
+			$param = array( ':log_action' => 'New',
+							':log_details' => 'Inserted new row in table ' .$tabel,
+							':log_who' => $_SESSION['username']
+			);
+			$query = 'INSERT INTO admin_logs (log_action, log_details, log_who) 
+					VALUES(:log_action, :log_details, :log_who)';
+			$this->databaseHandler->executeQuery($query, $param);
 			return true;
+		}
 		else
 			return false;
 	}
@@ -66,8 +86,18 @@ class ActionHandler extends FrameWorkBackend
 		$param = array(':id' => $id);
 		echo $query . "</br>";
 		
+		//return succes of error en update logs..
 		if($this->databaseHandler->executeQuery($query, $param))
+		{
+			$param = array( ':log_action' => 'Delete',
+							':log_details' => 'Deleted row '. $id . ' from table ' .$tabel,
+							':log_who' => $_SESSION['username']
+			);
+			$query = 'INSERT INTO admin_logs (log_action, log_details, log_who) 
+					VALUES(:log_action, :log_details, :log_who)';
+			$this->databaseHandler->executeQuery($query, $param);
 			return true;
+		}
 		else
 			return false;
 	}

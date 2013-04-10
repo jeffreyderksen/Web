@@ -20,12 +20,12 @@ function checkPageExist()
 				if (data) 
 				{
 					$('#validation-text').html('<p style="color: green">Beschikbaar</p>');
-					$('#submit').removeAttr("disabled");
+					$('#button-submit').removeAttr("disabled");
 				} 
 				else 
 				{
 					$('#validation-text').html('<p style="color: red">Niet beschikbaar</p>');
-					$('#submit').attr('disabled', 'true');
+					$('#button-submit').attr('disabled', 'true');
 				}
 			}
 		}
