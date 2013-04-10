@@ -1,5 +1,4 @@
 <?php
-include_once ('frontend/dbHandler.class.php');
 include_once('frontend/contentpart_1.class.php');
 include_once ('frontend/user.class.php');
 
@@ -33,7 +32,7 @@ if($page == 'high_scores')
 		$htmlPage->setContent($page);
 		$htmlPage->setTitle($page);
 	} else {
-		$htmlPage->setContent('loginform');
+		$htmlPage->setLoginPage();
 		$htmlPage->setTitle($page);
 	}
 } 

@@ -1,4 +1,5 @@
 <?php
+include_once('include/database_handler.class.php');
 class ContentPage 
 {
 	//layout
@@ -13,32 +14,40 @@ class ContentPage
 	private $jScript;
 	
 	//connection 
-	public $sqlConnection;
+	public $dbHandle;
 	
 	
 	
 	public function __construct()
 	{
-		$this->sqlConnection = new dbHandler();
-		$this->sqlConnection->openConnection("localhost","User","bassie","gametriangle");		
+		//maak object voor de database handler
+		$this->dbHandle = new DatabaseHandler();
+		
+		if(!$this->dbHandle->openConnection('mysql:dbname=gametriangle;host=localhost', 'test', 'test'))
+			echo '<p style="color: red">Error connecting to database.</p>';	
 	}
 	
 	public function setMenu()
 	{
-		$query = '';
+		$query = 'SELECT content_menu,content_title FROM content';
 		$param = array();
-		$menu_items = $this->sqlConnection->executeQuery($query, $param);
+		$menu_items = $this->dbHandle->executeQuery($query, $param);
 		
 		$result = '';
 		
-		for($i = 0; $i < sizeof($menu_items['menu_title']); $i++)
+		for($i = 0; $i < sizeof($menu_items); $i++)
 		{
 				$result .= '<li>';
-				$result .= '<a href="?page='. strtolower($menu_items['menu_title'][$i]). '">' . $menu_items['menu_item'][$i] . '</a>';
+				$result .= '<a href="?page='. strtolower($menu_items[$i]['content_menu']). '">' . $this->getMenuTitle($menu_items[$i]['content_title']) . '</a>';
 				$result .= '</li>';
 		}		
 		
 		$this->menu = $result;
+	}
+	
+	public function getMenuTitle($value)
+	{
+		return $value = ucfirst(str_replace(array('_'), array(' '), $value));
 	}
 	
 	public function setLogin($value)
@@ -76,16 +85,50 @@ class ContentPage
 			}
 	}
 	
+	public function setLoginPage()
+	{
+		$result = '<div class=formdiv><h2>For viewing this page you need to be a registered member and logged in to the site</h2><form method="post" action="index.php">					
+					<table>
+						<tr>
+							<td>
+								<label>Login:</label>
+							</td>
+							<td>
+								<input type="text" name="username"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label>Password:</label>
+							</td>
+							<td>
+								<input type="password" name="password"></input>
+							</td>						
+						</tr>
+					</table>
+					<input class="button" type="submit" name="loginbutton" value="Login"></input>
+					<input type="hidden" name="action" value="login"/>
+					<input type="hidden" name="action" value="verifylogin" />
+				</form></div>';
+		$this->content = $result;
+	}
+	
 	public function setContent($value)
 	{
-		$result = $this->sqlConnection->executePreparedQuery('content',$value);
-		$this->content = $result;
+
+		$param = array(':content_menu' => $value);
+		$query = 'SELECT content_text FROM content WHERE content_menu=:content_menu';
+		$content = $this->dbHandle->executeQuery($query,$param);		
+
+		$this->content = $content[0]['content_text'];
 	}
 	
 	public function setTitle($value)
 	{
-		$result = $this->sqlConnection->executePreparedQuery('title',$value);
-		$this->title = $result;
+		$param = array(':content_menu' => $value);
+		$query = 'SELECT content_title FROM content WHERE conent_menu=:content_menu';
+		$result = $this->dbHandle->executeQuery($query,$value);
+		$this->title = $result[0]['content_title'];
 	}
 	
 	public function setCss($value)
@@ -101,7 +144,10 @@ class ContentPage
 	
 	public function addUser($fn,$ln,$un,$pw,$em)
 	{
-		$this->sqlConnection->addUserQuery($fn,$ln,$un,$pw,$em);
+		$param = array(':fn' => $fn,':ln' => $ln,':un' => $un,':pw' => $pw,':em' => $em,);
+		$query = 'INSERT INTO member(member_fname, member_lname, member_uname, member_pass, member_email) 
+					VALUES(":fn",":ln",":un",":pw",":em")';
+		$this->dbHandle->executeQuery($query,$param);
 	}
 	
 	public function getFormVariable($value)

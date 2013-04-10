@@ -11,16 +11,19 @@ class User extends ContentPage{
 		}
 		$result = false;
 		
+		$param = array(':member_uname' => $username);
+		$query = 'SELECT member_uname, member_pass FROM member WHERE member_uname=:member_uname';
 		
-		$usernameData = $this->sqlConnection->executePreparedQuery('user', $username);
-		$passwordData = $this->sqlConnection->executePreparedQuery('pass', $username);
+		$login = $this->dbHandle->executeQuery($query,$param);
 		
-		if($username == $usernameData && $password == $passwordData)
+		
+		
+		if($username == $login[0]['member_uname'] && $password == $login[0]['member_pass'])
 		{
 			$result = true;
 			
 			$_SESSION['username'] = $username;
-			$_SESSION['password'] = $passwordData;
+			$_SESSION['password'] = $password;
 		}
 		
 		return $result;
