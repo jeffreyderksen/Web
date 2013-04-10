@@ -27,16 +27,6 @@ class Config
 		return $this->config['config_metacharset'];
 	}
 	
-	public function getMetaKeywords()
-	{
-		return $this->config['config_metakeywords'];
-	}
-	
-	public function getMetaDescription()
-	{
-		return $this->config['config_metadescription'];
-	}
-	
 	public function getAuthor()
 	{
 		return $this->config['config_author'];

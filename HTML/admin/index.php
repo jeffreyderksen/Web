@@ -15,8 +15,6 @@ $action = $framework->getFormVariable('action');
 
 /* DEFAULT PAGE SETTINGS */
 $framework->setCharset($config->getCharset());
-$framework->setMetaKeywords($config->getMetaKeywords());
-$framework->setMetaDescription($config->getMetaDescription());
 $framework->setAuthor($config->getAuthor());
 $framework->setCssFile($config->getCssFile());
 

@@ -9,8 +9,6 @@ class FrameWorkBackend
 	private $page;
 	
 	private $charset;
-	private $metakeywords;
-	private $metadescription;
 	private $author;
 	private $cssFile;
 	
@@ -68,14 +66,6 @@ class FrameWorkBackend
 	public function setCharset($value)
 	{
 		$this->charset = $value;
-	}
-	public function setMetaKeywords($value)
-	{
-		$this->metakeywords = $value;
-	}
-	public function setMetaDescription($value)
-	{
-		$this->metadescription = $value;
 	}
 	public function setAuthor($value)
 	{
@@ -465,8 +455,6 @@ class FrameWorkBackend
 			<html>
 			<head>			
 				<meta charset="'. $this->charset .'">
-				<meta name="keywords" content="'. $this->metakeywords .'">
-				<meta name="description" content="'. $this->metadescription .'">
 				<meta name="author" content="'. $this->author .'">
 				<title>'. $this->title .'</title>
 				<link href="'. $this->cssFile .'" rel="stylesheet" type="text/css" />
