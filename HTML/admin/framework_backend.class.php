@@ -348,8 +348,7 @@ class FrameWorkBackend
 				//textarea..
 				else if($columns[$i] == 'content_text')
 				{
-					$content .= '<textarea name="'. $columns[$i] .'" >'. $result[0][$columns[$i]] .'</textarea>
-								 <script>CKEDITOR.replace( "content_text" );</script>';
+					$content .= '<textarea id="editor" name="'. $columns[$i] .'" >'. $result[0][$columns[$i]] .'</textarea>';
 				}
 				//normaal
 				else
@@ -385,8 +384,8 @@ class FrameWorkBackend
 				//textarea
 				else if($columns[$i] == 'content_text')
 				{
-					$content .= '<textarea name="'. $columns[$i] .'" ></textarea>
-							 	 <script>CKEDITOR.replace( "content_text" );</script>';
+					$content .= '<textarea id="editor" name="'. $columns[$i] .'" ></textarea>';
+					$content .= '';
 				}
 				//normaal
 				else
@@ -458,10 +457,19 @@ class FrameWorkBackend
 				<meta name="author" content="'. $this->author .'">
 				<title>'. $this->title .'</title>
 				<link href="'. $this->cssFile .'" rel="stylesheet" type="text/css" />
-				<script src="_js/ckeditor/ckeditor.js"></script>
+				<link type="text/css" rel="stylesheet" href="_js/jQuery-TE_v.1.3.5/jquery-te-1.3.5.css">
+				<script type="text/javascript" src="http://code.jquery.com/jquery.min.js" charset="utf-8"></script>
+				<script type="text/javascript" src="_js/jQuery-TE_v.1.3.5/jquery-te-1.3.5.min.js" charset="utf-8"></script>
+						
 				<script src="_js/check.js"></script>	
 				<script src="_js/confirm.js"></script>		
-				<script src="_js/jquery-1.6.3.min.js"></script>
+
+				<script type="text/javascript" charset="utf-8">
+				$(document).ready(function() {
+					$("#editor").jqte();
+				});
+				</script>
+						
 			</head>
 			<body>
 			<div id="wrap">
