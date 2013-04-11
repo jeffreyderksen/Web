@@ -126,7 +126,7 @@ class ContentPage
 	public function setTitle($value)
 	{
 		$param = array(':content_menu' => $value);
-		$query = 'SELECT content_title FROM content WHERE conent_menu=:content_menu';
+		$query = 'SELECT content_title FROM content WHERE content_menu=:content_menu';
 		$result = $this->dbHandle->executeQuery($query,$value)->fetchAll();
 		$this->title = $result[0]['content_title'];
 	}
