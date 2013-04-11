@@ -29,7 +29,7 @@ class ContentPage
 	
 	public function setMenu()
 	{
-		$query = 'SELECT content_menu,content_title FROM content';
+		$query = 'SELECT content_menu FROM content';
 		$param = array();
 		$menu_items = $this->dbHandle->executeQuery($query, $param)->fetchAll();
 		
@@ -38,7 +38,7 @@ class ContentPage
 		for($i = 0; $i < sizeof($menu_items); $i++)
 		{
 				$result .= '<li>';
-				$result .= '<a href="?page='. strtolower($menu_items[$i]['content_menu']). '">' . $this->getMenuTitle($menu_items[$i]['content_title']) . '</a>';
+				$result .= '<a href="?page='. strtolower($menu_items[$i]['content_menu']). '">' . $this->getMenuTitle($menu_items[$i]['content_menu']) . '</a>';
 				$result .= '</li>';
 		}		
 		
@@ -146,7 +146,7 @@ class ContentPage
 	{
 		$param = array(':fn' => $fn,':ln' => $ln,':un' => $un,':pw' => $pw,':em' => $em,);
 		$query = 'INSERT INTO member(member_fname, member_lname, member_uname, member_pass, member_email) 
-					VALUES(":fn",":ln",":un",":pw",":em")';
+					VALUES(:fn,:ln,:un,:pw,:em)';
 		$this->dbHandle->executeQuery($query,$param)->fetchAll();
 	}
 	
