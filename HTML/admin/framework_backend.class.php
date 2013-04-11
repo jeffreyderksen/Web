@@ -483,7 +483,7 @@ class FrameWorkBackend
 					<div id="header">'. $this->header .'</div>
 					<div id="message">'. $this->message .'</div>
 					<div id="content">' . $this->content . '</div>
-					<div id="footer">'. $this->footer .'</br><i>Logged in as: ' . $_SESSION['username'] . '</i></div>
+					<div id="footer">'. $this->footer .'</br><i>Logged in as: ' . $_SESSION['ausername'] . '</i></div>
 				</div>
 				
 			</div>

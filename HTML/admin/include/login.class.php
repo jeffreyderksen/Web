@@ -43,7 +43,7 @@ class Login extends FrameWorkBackend
 		//SHA1 versleuteling
 		if(strlen($password) != 40)
 		{
-			$this->error = '<img class="error-oops" src="images/oops.png" alt="error"></br> Oops, it looks like you have a bad memory..';
+			$this->error = '<img class="error-oops" src="images/oops.png" alt="error"></br> Oops, it looks like you have a bad memoryyy..';
 			return false;
 		}
 		
@@ -79,8 +79,6 @@ class Login extends FrameWorkBackend
 				return true;
 			}
 		}
-
-		$this->error = '<img class="error-oops" src="images/oops.png" alt="error"></br> Oops, it looks like you have a bad memory..';
 		return false;
 	}
 	
