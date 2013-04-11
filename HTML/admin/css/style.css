@@ -62,6 +62,16 @@ table textarea
 	margin-top: 57px;
 	padding: 10px;
 }
+#message
+{
+	margin: 0 10px 0 10px;
+}
+#message p
+{
+	background: rgb(100,255,0);
+	border: solid 1px;
+	padding: 10px;
+}
 #content
 {
 	padding: 10px;
@@ -95,7 +105,7 @@ table textarea
 }
 #edit-page form
 {
-	width: 710px;
+	width: 685px;
 }
 #edit-page input
 {
@@ -107,7 +117,7 @@ table textarea
 {
 	width: 200px;
 }
-#edit-page .submit
+#edit-page .button-submit
 {
 	margin: 10px;
 }
@@ -124,6 +134,11 @@ table textarea
 	text-align: center;
 	width: 150px;
 	heigt: 150px;
+}
+#validation-text p
+{
+	padding: 0;
+	margin: 0;
 }
 #sidebar 
 {

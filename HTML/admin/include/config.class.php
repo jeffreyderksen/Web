@@ -14,7 +14,7 @@ class Config
 		
 		//query
 		$query = 'SELECT * FROM admin_config';
-		$result = $databaseHandler->executeQuery($query);
+		$result = $databaseHandler->executeQuery($query)->fetchAll();
 		
 		if(is_array($result))
 			$this->config = $result[0];
@@ -25,16 +25,6 @@ class Config
 	public function getCharset()
 	{
 		return $this->config['config_metacharset'];
-	}
-	
-	public function getMetaKeywords()
-	{
-		return $this->config['config_metakeywords'];
-	}
-	
-	public function getMetaDescription()
-	{
-		return $this->config['config_metadescription'];
 	}
 	
 	public function getAuthor()

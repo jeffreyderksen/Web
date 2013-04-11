@@ -1,6 +1,6 @@
 <?php
 include_once('../include/database_handler.class.php');
-include_once('../include/action_handler.class.php');
+include_once('include/action_handler.class.php');
 
 class FrameWorkBackend
 {
@@ -9,8 +9,6 @@ class FrameWorkBackend
 	private $page;
 	
 	private $charset;
-	private $metakeywords;
-	private $metadescription;
 	private $author;
 	private $cssFile;
 	
@@ -19,6 +17,8 @@ class FrameWorkBackend
 	private $menu;
 	private $content;
 	private $footer;
+	
+	private $message;
 
 	//constructor
 	public function __construct()
@@ -36,13 +36,17 @@ class FrameWorkBackend
 		if($page != 'edit')
 		{
 			$param = array(':page_menu' => $page);
-			$query = 'SELECT page_menu, page_title, page_header, page_footer, page_text FROM admin_pages
-				  WHERE page_menu=:page_menu';
-			$result = $this->databaseHandler->executeQuery($query, $param);
+			$query = 'SELECT page_menu, page_title, page_header, page_footer, page_text FROM admin_pages WHERE page_menu=:page_menu';
+			$result = $this->databaseHandler->executeQuery($query, $param)->fetchAll();
 			
 			if(is_array($result))
 			{
 				$this->page = $result[0];
+				//Welcome message
+				if($page == 'dashboard')
+				{
+					$this->setMessage('<p>Welcome '. $_SESSION['firstname'] .' ' . $_SESSION['lastname'] . '. </br>Last activity: <i>'. $_SESSION['activity'] .'</i></p>');
+				}
 				return true;
 			}
 			else
@@ -52,18 +56,16 @@ class FrameWorkBackend
 		}
 	}
 	
+	/* DISPLAY SUCCES OR ERROR MESSAGE */
+	public function setMessage($value)
+	{
+		$this->message = $value;
+	}
+	
 	/*DEFAULT PAGE SETTINGS */
 	public function setCharset($value)
 	{
 		$this->charset = $value;
-	}
-	public function setMetaKeywords($value)
-	{
-		$this->metakeywords = $value;
-	}
-	public function setMetaDescription($value)
-	{
-		$this->metadescription = $value;
 	}
 	public function setAuthor($value)
 	{
@@ -92,6 +94,8 @@ class FrameWorkBackend
 	public function setContent($value)
 	{
 		$content = '';
+		$content = '<div id="content-page">';
+		
 		$page = $this->page['page_menu'];
 		//check voor statische tekst in database
 		if(empty($this->page[$value]))
@@ -99,13 +103,12 @@ class FrameWorkBackend
 			//laad frontend CONTENT
 			if($this->page['page_menu'] == 'manage_pages')
 			{
-				$content .= '<div id="content-page">
-							 <h3>Current active pages</h3>
+				$content .= '<h3>Current pages</h3>
 							 <a href="?page='. $page .'&action=new">
-							 <img src="images/icons/add.png"/> Nieuwe pagina</a>';
+							 <img src="images/icons/add.png"/> New page</a>';
 				
 				$query = 'SELECT content_id,content_menu FROM content';
-				$result = $this->databaseHandler->executeQuery($query);
+				$result = $this->databaseHandler->executeQuery($query)->fetchAll();
 									
 				//table weergeven met alle pages
 				$content .= '<table>';
@@ -113,19 +116,19 @@ class FrameWorkBackend
 				for($i = 0; $i < count($result); $i++)
 				{
 					$content .= '<tr>';
-					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['content_id'] .'"><img src="images/icons/table_edit.png"/> Edit<a> <a href="?page='. $page .'&action=delete&row='. $result[$i]['content_id'] .'"><img src="images/icons/delete.png"/>Delete</a></td>';
-					$content .= '<td>'. ($i+1) .'</td><td>'. $this->getMenuTitle($result[$i]['content_menu']) .'</td>';
+					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['content_id'] .'"><img src="images/icons/table_edit.png"/> Edit</a> <a href="?page='. $page .'&action=delete&row='. $result[$i]['content_id'] .'"><img src="images/icons/delete.png"/>Delete</a></td>';
+					$content .= '<td>'. ($i+1) .'</td><td>'. $result[$i]['content_menu'] .'</td>';
 					$content .= '</tr>';
 				}
-				$content .= '</table></div>';
+				$content .= '</table>';
 			}
 			//laad frontend USERS
 			else if($this->page['page_menu'] == 'manage_members')
 			{
-				$content .= '<div id="content-page"><a href="?page='. $page .'&action=new"><img src="images/icons/add.png"/> Nieuwe member</a>';
+				$content .= '<h3>Members</h3><a href="?page='. $page .'&action=new"><img src="images/icons/add.png"/> New member</a>';
 				
 				$query = 'SELECT member_id, member_uname FROM member';
-				$result = $this->databaseHandler->executeQuery($query);
+				$result = $this->databaseHandler->executeQuery($query)->fetchAll();
 									
 				//table weergeven met alle pages
 				$content .= '<table>';
@@ -137,41 +140,65 @@ class FrameWorkBackend
 					$content .= '<td>'. ($i+1) .'</td><td>'. $this->getMenuTitle($result[$i]['member_uname']) .'</td>';
 					$content .= '</tr>';
 				}
-				$content .= '</table></div>';
+				$content .= '</table>';
 			}
-			//laad admin USERS
+			//laad ADMIN USERS
 			else if($this->page['page_menu'] == 'manage_admins')
 			{
-								$content .= '<div id="content-page"><a href="?page='. $page .'&action=new"><img src="images/icons/add.png"/> Nieuwe admin</a>';
+				$content .= '<h3>Administrators</h3><a href="?page='. $page .'&action=new"><img src="images/icons/add.png"/> New admin</a>';
 				
-				$query = 'SELECT admin_id, admin_uname FROM admin_member';
-				$result = $this->databaseHandler->executeQuery($query);
+				$query = 'SELECT admin_id, admin_uname,admin_activity FROM admin_member';
+				$result = $this->databaseHandler->executeQuery($query)->fetchAll();
 									
 				//table weergeven met alle pages
 				$content .= '<table>';
-				$content .= '<tr><th>Settings</th><th>#</th><th>User</th></tr>';
+				$content .= '<tr><th>Settings</th><th>#</th><th>Username</th><th>Last activity</th></tr>';
 				for($i = 0; $i < count($result); $i++)
 				{
 					$content .= '<tr>';
-					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['admin_id'] .'"><img src="images/icons/table_edit.png"/> Edit<a> <a href="?page='. $page .'&action=delete&row='. $result[$i]['admin_id'] .'"><img src="images/icons/delete.png"/>Delete</a></td>';
-					$content .= '<td>'. ($i+1) .'</td><td>'. $this->getMenuTitle($result[$i]['admin_uname']) .'</td>';
+					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['admin_id'] .'"><img src="images/icons/table_edit.png"/> Edit</a> 
+								     <a href="?page='. $page .'&action=delete&row='. $result[$i]['admin_id'] .'"><img src="images/icons/delete.png"/>Delete</a></td>';
+					$content .= '<td>'. ($i+1) .'</td>
+							     <td>'. $this->getMenuTitle($result[$i]['admin_uname']) .'</td>
+							     <td>'. $result[$i]['admin_activity'] .'</td>';
 					$content .= '</tr>';
 				}
-				$content .= '</table></div>';
-			}		
+				$content .= '</table>';
+			}
+			else if($this->page['page_menu'] == 'logs')
+			{
+				$content .= '<h3>Logs</h3>';
+				
+				$query = 'SELECT * FROM admin_logs';
+				$result = $this->databaseHandler->executeQuery($query)->fetchAll();
+					
+				//table weergeven met alle pages
+				$content .= '<table>';
+				$content .= '<tr><th>#</th><th>Action</th><th>Details</th><th>By</th></tr>';
+				for($i = 0; $i < count($result); $i++)
+				{
+					$content .= '<tr>';
+					$content .= '<td>'. ($i+1) .'</td>
+								 <td>'. $result[$i]['log_action'] .'</td>
+								 <td>'. $result[$i]['log_details'] .'</td>
+								 <td>'. $result[$i]['log_who'] .'</td>';
+					$content .= '</tr>';
+				}
+				$content .= '</table>';
+			}
 		}
 		else
 		{
 			$content .= $this->page['page_text'];
 		}
-	
+		$content .= '</div>';
 		$this->content .= $content;
 	}
 	
 	public function setMenu()
 	{
 		$query = 'SELECT page_menu FROM admin_pages';
-		$menuItems = $this->databaseHandler->executeQuery($query);
+		$menuItems = $this->databaseHandler->executeQuery($query)->fetchAll();
 		
 		$menu = '';
 		$menu .= '<ul>';
@@ -181,8 +208,7 @@ class FrameWorkBackend
 			$menu .= '<a href="?page='. $menuItems[$i]['page_menu'] . '">'. $this->getMenuTitle($menuItems[$i]['page_menu']) .'</a>';
 			$menu .= '</li>';
 		}
-		$menu .= '<li><a href="?action=logout">Logout</a></li>
-				  <li><a href="../">Site bekijken</a></li>';
+		$menu .= '<li><a href="?page=dashboard&action=logout">Logout</a></li>';
 		$menu .= '</ul>';
 		
 		$this->menu = $menu;
@@ -207,23 +233,35 @@ class FrameWorkBackend
 			}
 			case 'load':
 			{
-					$row = $this->getFormVariable('row');
-					$this->content .= $this->displayEditPage($page, $action, $row); break;
+				$row = $this->getFormVariable('row');
+				$this->content .= $this->displayEditPage($page, $action, $row); break;
 			}
 			case 'delete': 
 			{
 				$row = $this->getFormVariable('row');
-				$actionHandler->deleteRow($page, $row); break;
+				if($actionHandler->deleteRow($page, $row))
+					$this->setMessage('<p style="color:green">Action: "Delete" was executed succesfully.</p>');
+				else
+					$this->setMessage('<p style="color:red">Action: "Delete" could not be executed.</p>');
+				break;
 			}
 
 			case 'update':
 			{
 				$row = $this->getFormVariable('row');
-				$actionHandler->updateRow($page, $row); break;
+				if($actionHandler->updateRow($page, $row))
+					$this->setMessage('<p style="color:green">Action: "Edit" was executed succesfully.</p>');
+				else
+					$this->setMessage('<p style="color:red">Action: "Edit" could not be executed.</p>');
+				break;
 			}
 			case 'insert':
 			{
-				$actionHandler->newRow($page); break;
+				if($actionHandler->newRow($page))
+					$this->setMessage('<p style="color:green">Action: "New" was executed succesfully.</p>'); 
+				else
+					$this->setMessage('<p style="color:red">Action: "New" could not be executed.</p>');
+				break;
 			}
 		}
 	}
@@ -277,23 +315,45 @@ class FrameWorkBackend
 			$content .= '<h4>Row "'. $row .'"</h4>';
 		$content .= '<form action="index.php" method="POST">';
 		
+		//gegevens ophalen
 		if($action == 'load')
 		{
 			$param = array(':id' => $row);
 			$query = 'SELECT * FROM '. $tabel .' WHERE '. $columns[0] .'=:id';
 			echo $query;
-			$result = $this->databaseHandler->executeQuery($query, $param);
+			$result = $this->databaseHandler->executeQuery($query, $param)->fetchAll();
 			
 			for($i = 0; $i < count($result[0])/2; $i++)
 			{
 				$content .= '<label for="'. $columns[$i] .'">Change '. $columns[$i] .'</label>';
+				//id - disabled
 				if($i == 0)
 					$content .= '<input name="'. $columns[$i] .'" value="'.$result[0][$columns[$i]].'" disabled/>';
-				else if($columns[$i] != 'content_text')
-					$content .= '<input name="'. $columns[$i] .'" value="'. $result[0][$columns[$i]] .'"/>';
-				else
+				//ajax oninput ..
+				else if($columns[$i] == 'content_menu')
+				{
+					$content .= '<input id="'. $columns[$i] .'" name="'. $columns[$i] .'" value="'.$result[0][$columns[$i]].'" oninput="checkPageExist()" autocomplete="off"/>';
+					$content .= '<span id="validation-text"></span>';
+				}
+				else if($columns[$i] == 'member_uname')
+				{
+					$content .= '<input id="'. $columns[$i] .'" name="'. $columns[$i] .'" value="'.$result[0][$columns[$i]].'" oninput="checkUsername()" autocomplete="off"/>';
+					$content .= '<span id="validation-text"></span>';
+				}
+				else if($columns[$i] == 'admin_uname')
+				{
+					$content .= '<input id="'. $columns[$i] .'" name="'. $columns[$i] .'" value="'.$result[0][$columns[$i]].'" oninput="checkAdminUsername()" autocomplete="off"/>';
+					$content .= '<span id="validation-text"></span>';
+				}
+				//textarea..
+				else if($columns[$i] == 'content_text')
+				{
 					$content .= '<textarea name="'. $columns[$i] .'" >'. $result[0][$columns[$i]] .'</textarea>
 								 <script>CKEDITOR.replace( "content_text" );</script>';
+				}
+				//normaal
+				else
+					$content .= '<input name="'. $columns[$i] .'" value="'. $result[0][$columns[$i]] .'"/>';
 			}
 		}
 		//new..
@@ -303,23 +363,50 @@ class FrameWorkBackend
 			{
 				$content .= '<label for="'. $columns[$i] .'">Change '. $columns[$i] .'</label>';
 				
+				//id - disabled
 				if($i == 0)
 					$content .= '<input name="'. $columns[$i] .'" value="" disabled/>';
-				else if($columns[$i] != 'content_text')
-					$content .= '<input name="'. $columns[$i] .'" value=""/>';
-				else
+				//ajax content_menu oninput ..
+				else if($columns[$i] == 'content_menu')
+				{
+					$content .= '<input id="'. $columns[$i] .'" name="'. $columns[$i] .'" value="" oninput="checkPageExist()" autocomplete="off"/>';
+					$content .= '<span id="validation-text"></span>';
+				}
+				else if($columns[$i] == 'member_uname')
+				{
+					$content .= '<input id="'. $columns[$i] .'" name="'. $columns[$i] .'" value="" oninput="checkUsername()" autocomplete="off"/>';
+					$content .= '<span id="validation-text"></span>';
+				}
+				else if($columns[$i] == 'admin_uname')
+				{
+					$content .= '<input id="'. $columns[$i] .'" name="'. $columns[$i] .'" value="" oninput="checkAdminUsername()" autocomplete="off"/>';
+					$content .= '<span id="validation-text"></span>';
+				}
+				//textarea
+				else if($columns[$i] == 'content_text')
+				{
 					$content .= '<textarea name="'. $columns[$i] .'" ></textarea>
-							 <script>CKEDITOR.replace( "content_text" );</script>';
+							 	 <script>CKEDITOR.replace( "content_text" );</script>';
+				}
+				//normaal
+				else
+					$content .= '<input name="'. $columns[$i] .'" value=""/>';
 			}
 		}
 
 		//buttons
-		$content .= '<input type="submit" class="submit" name="submit" value="Wijzig"/>
-					 <input type="hidden" name="row" value="'. $row .'"/>';
 		if($action == 'load')
-			$content .= '<input type="hidden" name="action" value="update"/>';	
-		else
-			$content .= '<input type="hidden" name="action" value="insert"/>';
+		{
+			$content .= '<input type="hidden" name="action" value="update"/>
+						 <input type="button" id="button-submit" class="button-submit" name="confirm" onclick="confirmMessage(this)" value="Change"/>
+					 	 <input type="hidden" name="row" value="'. $row .'"/>';
+		}
+		else if($action == 'new')
+		{
+			$content .= '<input type="hidden" name="action" value="insert"/>
+						 <input type="button" id="button-submit" class="button-submit" name="confirm" onclick="confirmMessage(this)" value="New"/>';
+		}
+			
 		
 		$content .= '<input type="hidden" name="page" value="'. $page .'"/>';
 		$content .= '</form></div>';
@@ -368,12 +455,13 @@ class FrameWorkBackend
 			<html>
 			<head>			
 				<meta charset="'. $this->charset .'">
-				<meta name="keywords" content="'. $this->metakeywords .'">
-				<meta name="description" content="'. $this->metadescription .'">
 				<meta name="author" content="'. $this->author .'">
 				<title>'. $this->title .'</title>
 				<link href="'. $this->cssFile .'" rel="stylesheet" type="text/css" />
 				<script src="_js/ckeditor/ckeditor.js"></script>
+				<script src="_js/check.js"></script>	
+				<script src="_js/confirm.js"></script>		
+				<script src="_js/jquery-1.6.3.min.js"></script>
 			</head>
 			<body>
 			<div id="wrap">
@@ -385,6 +473,7 @@ class FrameWorkBackend
   				</div>
 				<div id="container">
 					<div id="header">'. $this->header .'</div>
+					<div id="message">'. $this->message .'</div>
 					<div id="content">' . $this->content . '</div>
 					<div id="footer">'. $this->footer .'</br><i>Logged in as: ' . $_SESSION['username'] . '</i></div>
 				</div>

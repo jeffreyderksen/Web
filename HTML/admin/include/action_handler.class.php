@@ -1,5 +1,5 @@
 <?php
-include_once('database_handler.class.php');
+include_once('../include/database_handler.class.php');
 include_once('framework_backend.class.php');
 
 class ActionHandler extends FrameWorkBackend
@@ -17,10 +17,21 @@ class ActionHandler extends FrameWorkBackend
 		$query = 'UPDATE '. $tabel . ' SET ' . $queryString . ' WHERE ' . $columns[0] . '=' . $id;
 		$keys = $this->getParamArray($page);
 		$param = $this->getUpdateParam($keys, $columns);
-		echo $query;
 		
-		$this->databaseHandler->executeQuery($query, $param);
-
+		//return succes of error en update logs..
+		if($this->databaseHandler->executeQuery($query, $param))
+		{
+			$param = array( ':log_action' => 'Edit',
+							':log_details' => 'Updated row'. $id . ' in table ' .$tabel,
+							':log_who' => $_SESSION['username']
+			);
+			$query = 'INSERT INTO admin_logs (log_action, log_details, log_who) 
+					VALUES(:log_action, :log_details, :log_who)';
+			$this->databaseHandler->executeQuery($query, $param);
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	public function newRow($page)
@@ -34,7 +45,7 @@ class ActionHandler extends FrameWorkBackend
 		//'key' => ''
 		$keys = $this->getParamArray($page);
 		//:content_menu, :content_title
-		$valueString = $this->getValuesString($this->getColumns($page));
+		$valueString = $this->getValuesString($this->getColumns($tabel));
 		
 		//vul array met keys en values
 		$param = $this->getUpdateParam($keys, $columns);
@@ -46,7 +57,20 @@ class ActionHandler extends FrameWorkBackend
 		$query = 'INSERT into '. $tabel .' ('. $columnString .') VALUES('. $valueString .')';
 		echo $query;
 		
-		$this->databaseHandler->executeQuery($query, $param);
+		//return succes of error en update logs..
+		if($this->databaseHandler->executeQuery($query, $param))
+		{
+			$param = array( ':log_action' => 'New',
+							':log_details' => 'Inserted new row in table ' .$tabel,
+							':log_who' => $_SESSION['username']
+			);
+			$query = 'INSERT INTO admin_logs (log_action, log_details, log_who) 
+					VALUES(:log_action, :log_details, :log_who)';
+			$this->databaseHandler->executeQuery($query, $param);
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	public function deleteRow($page, $id)
@@ -55,13 +79,27 @@ class ActionHandler extends FrameWorkBackend
 			return;
 		
 		$tabel = $this->getTabel($page);
-		$columns = $this->getColumns($page);
+		$columns = $this->getColumns($tabel);
 		
 		//execute
 		$query = 'DELETE FROM '. $tabel . ' WHERE ' . $columns[0] . '=:id';
 		$param = array(':id' => $id);
 		echo $query . "</br>";
-		$this->databaseHandler->executeQuery($query,$param);
+		
+		//return succes of error en update logs..
+		if($this->databaseHandler->executeQuery($query, $param))
+		{
+			$param = array( ':log_action' => 'Delete',
+							':log_details' => 'Deleted row '. $id . ' from table ' .$tabel,
+							':log_who' => $_SESSION['username']
+			);
+			$query = 'INSERT INTO admin_logs (log_action, log_details, log_who) 
+					VALUES(:log_action, :log_details, :log_who)';
+			$this->databaseHandler->executeQuery($query, $param);
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	public function getTabel($page)
@@ -169,7 +207,7 @@ class ActionHandler extends FrameWorkBackend
 		
 		for($i = 0; $i < count($keysArray); $i++)
 		{
-			if($columns[$i] == 'admin_pass' || 'member_pass')
+			if($columns[$i] == 'admin_pass' || $columns[$i] == 'member_pass')
 				$value = sha1($this->getFormVariable($columns[$i]));
 			else
 				$value = $this->getFormVariable($columns[$i]);
