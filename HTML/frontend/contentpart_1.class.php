@@ -31,7 +31,7 @@ class ContentPage
 	{
 		$query = 'SELECT content_menu,content_title FROM content';
 		$param = array();
-		$menu_items = $this->dbHandle->executeQuery($query, $param);
+		$menu_items = $this->dbHandle->executeQuery($query, $param)->fetchAll();
 		
 		$result = '';
 		
@@ -118,7 +118,7 @@ class ContentPage
 
 		$param = array(':content_menu' => $value);
 		$query = 'SELECT content_text FROM content WHERE content_menu=:content_menu';
-		$content = $this->dbHandle->executeQuery($query,$param);		
+		$content = $this->dbHandle->executeQuery($query,$param)->fetchAll();		
 
 		$this->content = $content[0]['content_text'];
 	}
@@ -127,7 +127,7 @@ class ContentPage
 	{
 		$param = array(':content_menu' => $value);
 		$query = 'SELECT content_title FROM content WHERE conent_menu=:content_menu';
-		$result = $this->dbHandle->executeQuery($query,$value);
+		$result = $this->dbHandle->executeQuery($query,$value)->fetchAll();
 		$this->title = $result[0]['content_title'];
 	}
 	
@@ -147,7 +147,7 @@ class ContentPage
 		$param = array(':fn' => $fn,':ln' => $ln,':un' => $un,':pw' => $pw,':em' => $em,);
 		$query = 'INSERT INTO member(member_fname, member_lname, member_uname, member_pass, member_email) 
 					VALUES(":fn",":ln",":un",":pw",":em")';
-		$this->dbHandle->executeQuery($query,$param);
+		$this->dbHandle->executeQuery($query,$param)->fetchAll();
 	}
 	
 	public function getFormVariable($value)
