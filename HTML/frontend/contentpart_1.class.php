@@ -183,7 +183,7 @@ class ContentPage
 					<body>
 						<div id="container">
 							<div id="header">
-								<h1>GameTriangle</h1>
+								<h1>GameTriangle - '.$this->title.'</h1>
 							</div>
 							
 							<div id="menu">

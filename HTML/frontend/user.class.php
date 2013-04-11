@@ -14,7 +14,7 @@ class User extends ContentPage{
 		$param = array(':member_uname' => $username);
 		$query = 'SELECT member_uname, member_pass FROM member WHERE member_uname=:member_uname';
 		
-		$login = $this->dbHandle->executeQuery($query,$param);
+		$login = $this->dbHandle->executeQuery($query,$param)->fetchAll();
 		
 		
 		
