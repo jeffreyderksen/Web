@@ -39,7 +39,7 @@ class FrameWorkBackend
 			$query = 'SELECT page_menu, page_title, page_header, page_footer, page_text FROM admin_pages WHERE page_menu=:page_menu';
 			$result = $this->databaseHandler->executeQuery($query, $param)->fetchAll();
 			
-			if(is_array($result))
+			if(!empty($result) && is_array($result))
 			{
 				$this->page = $result[0];
 				//Welcome message
@@ -320,7 +320,6 @@ class FrameWorkBackend
 		{
 			$param = array(':id' => $row);
 			$query = 'SELECT * FROM '. $tabel .' WHERE '. $columns[0] .'=:id';
-			echo $query;
 			$result = $this->databaseHandler->executeQuery($query, $param)->fetchAll();
 			
 			for($i = 0; $i < count($result[0])/2; $i++)

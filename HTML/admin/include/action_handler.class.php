@@ -23,7 +23,7 @@ class ActionHandler extends FrameWorkBackend
 		{
 			$param = array( ':log_action' => 'Edit',
 							':log_details' => 'Updated row'. $id . ' in table ' .$tabel,
-							':log_who' => $_SESSION['username']
+							':log_who' => $_SESSION['ausername']
 			);
 			$query = 'INSERT INTO admin_logs (log_action, log_details, log_who) 
 					VALUES(:log_action, :log_details, :log_who)';
@@ -50,19 +50,14 @@ class ActionHandler extends FrameWorkBackend
 		//vul array met keys en values
 		$param = $this->getUpdateParam($keys, $columns);
 		
-		echo '<pre>';
-		print_r($param);
-		echo '</pre>';
-		
 		$query = 'INSERT into '. $tabel .' ('. $columnString .') VALUES('. $valueString .')';
-		echo $query;
 		
 		//return succes of error en update logs..
 		if($this->databaseHandler->executeQuery($query, $param))
 		{
 			$param = array( ':log_action' => 'New',
 							':log_details' => 'Inserted new row in table ' .$tabel,
-							':log_who' => $_SESSION['username']
+							':log_who' => $_SESSION['ausername']
 			);
 			$query = 'INSERT INTO admin_logs (log_action, log_details, log_who) 
 					VALUES(:log_action, :log_details, :log_who)';
@@ -84,14 +79,13 @@ class ActionHandler extends FrameWorkBackend
 		//execute
 		$query = 'DELETE FROM '. $tabel . ' WHERE ' . $columns[0] . '=:id';
 		$param = array(':id' => $id);
-		echo $query . "</br>";
 		
 		//return succes of error en update logs..
 		if($this->databaseHandler->executeQuery($query, $param))
 		{
 			$param = array( ':log_action' => 'Delete',
 							':log_details' => 'Deleted row '. $id . ' from table ' .$tabel,
-							':log_who' => $_SESSION['username']
+							':log_who' => $_SESSION['ausername']
 			);
 			$query = 'INSERT INTO admin_logs (log_action, log_details, log_who) 
 					VALUES(:log_action, :log_details, :log_who)';
