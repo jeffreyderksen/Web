@@ -22,8 +22,8 @@ class User extends ContentPage{
 		{
 			$result = true;
 			
-			$_SESSION['username'] = $username;
-			$_SESSION['password'] = $password;
+			$_SESSION['ausername'] = $username;
+			$_SESSION['apassword'] = $password;
 		}
 		
 		return $result;
@@ -33,9 +33,9 @@ class User extends ContentPage{
 	{
 		$result = false;
 		
-		if(isset($_SESSION['username']) && isset($_SESSION['password']))
+		if(isset($_SESSION['ausername']) && isset($_SESSION['apassword']))
 		{
-			$result = $this->setAuth($_SESSION['username'],$_SESSION['password']);
+			$result = $this->setAuth($_SESSION['ausername'],$_SESSION['apassword']);
 		}
 		
 		return $result;
@@ -43,8 +43,8 @@ class User extends ContentPage{
 	
 	public function removeAuth()
 	{
-		unset($_SESSION['username']);
-		unset($_SESSION['password']);
+		unset($_SESSION['ausername']);
+		unset($_SESSION['apassword']);
 	}	
 }
 ?>
