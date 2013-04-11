@@ -44,6 +44,7 @@ class ActionHandler extends FrameWorkBackend
 		
 		//'key' => ''
 		$keys = $this->getParamArray($page);
+		
 		//:content_menu, :content_title
 		$valueString = $this->getValuesString($this->getColumns($tabel));
 		
@@ -121,7 +122,7 @@ class ActionHandler extends FrameWorkBackend
 		switch($page)
 		{
 			case 'manage_pages' : return array(':content_menu' => '', ':content_title' => '', ':content_text' => '');
-			case 'manage_accounts' : return array(':member_fname' => '', ':member_lname' => '', ':member_uname' => '', ':member_pass' => '', ':member_email' => '');
+			case 'manage_members' : return array(':member_fname' => '', ':member_lname' => '', ':member_uname' => '', ':member_pass' => '', ':member_email' => '');
 			case 'manage_admins' : return array(':admin_fname' => '', ':admin_lname' => '', ':admin_uname' => '', ':admin_pass' => '', ':admin_email' => '');
 		}
 	}
