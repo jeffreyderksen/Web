@@ -7,7 +7,7 @@ function check(){
 	{
 		
 		
-		var url = "http://localhost/web/html/frontend/usernameCheck.php?un=";
+		var url = "http://jefderk.nl/gametriangle/html/frontend/usernameCheck.php?un=";
 		url += username;
 		xhr.onreadystatechange=function()
 		  {
