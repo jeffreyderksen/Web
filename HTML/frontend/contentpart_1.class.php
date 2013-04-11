@@ -153,14 +153,30 @@ class ContentPage
 		$param = array(':un' => $un);
 		$query = 'SELECT member_uname FROM member WHERE member_uname=:un';
 		$check = $this->dbHandle->executeQuery($query,$param)->fetchAll();
-		//if($check[0]['member_uname'] == '')
 		if(empty($check))
 		{
+			$result = 	'<div class=formdiv><h2>Thank you for creating an account on our site. </h2>
+						<h2>We hope you have a great time on our site</h2>
+						<p>You will be redirected to the homepage in several seconds</p>
+						<p>If nothing happens click <a href="index.php">here</a></p>
+						</div>';
 			$param = array(':fn' => $fn,':ln' => $ln,':un' => $un,':pw' => $pw,':em' => $em,);
 			$query = 	'INSERT INTO member(member_fname, member_lname, member_uname, member_pass, member_email) 
 						VALUES(:fn,:ln,:un,:pw,:em)';
 			$this->dbHandle->executeQuery($query,$param)->fetchAll();
-		}		
+			$this->content = $result;
+			header('Refresh: 8; index.php');
+		} 
+		else 
+		{
+			$result = 	'<div class=formdiv><h2>An error occured while submitting your account</h2>
+						<h2>Please be sure the username is not used yet</h2>
+						<p>You will be redirected to the register page in several seconds</p>
+						<p>If nothing happens click <a href="index.php?page=register">here</a></p>
+						</div>';
+			$this->content = $result;
+			header('Refresh: 8; index.php?page=register');
+		}	
 	}
 	
 	public function getFormVariable($value)
