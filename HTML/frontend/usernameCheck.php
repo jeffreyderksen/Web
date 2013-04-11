@@ -10,7 +10,7 @@ echo '<p style="color: red">Error connecting to database.</p>';
 	$un = $_GET["un"];
 	$param = array(':un' => $un);
 	$query = 'SELECT member_uname FROM member WHERE member_uname=:un';
-	$check = $db->executeQuery($query,$param);
+	$check = $db->executeQuery($query,$param)->fetchAll();
 	if($check[0]['member_uname'] == '')
 	{
 		echo 'This username is available for use';

@@ -22,8 +22,8 @@ class User extends ContentPage{
 		{
 			$result = true;
 			
-			$_SESSION['ausername'] = $username;
-			$_SESSION['apassword'] = $password;
+			$_SESSION['username'] = $username;
+			$_SESSION['password'] = $password;
 		}
 		
 		return $result;

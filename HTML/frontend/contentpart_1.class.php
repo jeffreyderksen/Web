@@ -94,7 +94,7 @@ class ContentPage
 								<label>Login:</label>
 							</td>
 							<td>
-								<input type="text" name="username"></input>
+								<input type="text" name="username"/>
 							</td>
 						</tr>
 						<tr>
@@ -102,11 +102,11 @@ class ContentPage
 								<label>Password:</label>
 							</td>
 							<td>
-								<input type="password" name="password"></input>
+								<input type="password" name="password"/>
 							</td>						
 						</tr>
 					</table>
-					<input class="button" type="submit" name="loginbutton" value="Login"></input>
+					<input class="button" type="submit" name="loginbutton" value="Login"/>
 					<input type="hidden" name="action" value="login"/>
 					<input type="hidden" name="action" value="verifylogin" />
 				</form></div>';
@@ -144,10 +144,16 @@ class ContentPage
 	
 	public function addUser($fn,$ln,$un,$pw,$em)
 	{
-		$param = array(':fn' => $fn,':ln' => $ln,':un' => $un,':pw' => $pw,':em' => $em,);
-		$query = 'INSERT INTO member(member_fname, member_lname, member_uname, member_pass, member_email) 
-					VALUES(:fn,:ln,:un,:pw,:em)';
-		$this->dbHandle->executeQuery($query,$param)->fetchAll();
+		$param = array(':un' => $un);
+		$query = 'SELECT member_uname FROM member WHERE member_uname=:un';
+		$check = $this->dbHandle->executeQuery($query,$param)->fetchAll();
+		if($check[0]['member_uname'] == '')
+		{
+			$param = array(':fn' => $fn,':ln' => $ln,':un' => $un,':pw' => $pw,':em' => $em,);
+			$query = 	'INSERT INTO member(member_fname, member_lname, member_uname, member_pass, member_email) 
+						VALUES(:fn,:ln,:un,:pw,:em)';
+			$this->dbHandle->executeQuery($query,$param)->fetchAll();
+		}		
 	}
 	
 	public function getFormVariable($value)

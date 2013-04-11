@@ -60,8 +60,8 @@ class Login extends FrameWorkBackend
 			
 			if($username == $usernameData && $password == $passwordData)
 			{
-				$_SESSION['username'] = $username;
-				$_SESSION['password'] = $passwordData;
+				$_SESSION['ausername'] = $username;
+				$_SESSION['apassword'] = $passwordData;
 				$_SESSION['firstname'] = $result[0]['admin_fname'];
 				$_SESSION['lastname'] = $result[0]['admin_lname'];
 				$_SESSION['email'] = $result[0]['admin_email'];
