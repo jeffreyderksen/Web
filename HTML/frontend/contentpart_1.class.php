@@ -127,7 +127,7 @@ class ContentPage
 	{
 		$param = array(':content_menu' => $value);
 		$query = 'SELECT content_title FROM content WHERE content_menu=:content_menu';
-		$result = $this->dbHandle->executeQuery($query,$value)->fetchAll();
+		$result = $this->dbHandle->executeQuery($query,$param)->fetchAll();
 		$this->title = $result[0]['content_title'];
 	}
 	
