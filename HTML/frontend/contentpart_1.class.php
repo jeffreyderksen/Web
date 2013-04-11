@@ -7,6 +7,7 @@ class ContentPage
 	private $loginForm;
 	private $content;
 	private $login;
+	private $page;
 	
 	//header
 	private $title;
@@ -25,6 +26,11 @@ class ContentPage
 		
 		if(!$this->dbHandle->openConnection('mysql:dbname=gametriangle;host=localhost', 'test', 'test'))
 			echo '<p style="color: red">Error connecting to database.</p>';	
+	}
+	
+	public function setPage($value)
+	{
+		$this->page = $value;
 	}
 	
 	public function setMenu()

@@ -14,7 +14,6 @@ if(empty($page))
 	$page = 'home';
 }
 
-
 $htmlPage->setCss('../css/style.css');
 $htmlPage->setMenu();
 

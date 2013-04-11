@@ -87,16 +87,16 @@ class Login extends FrameWorkBackend
 	public function isAuthenticated()
 	{	
 		//check session
-		if(isset($_SESSION['username']) && isset($_SESSION['password'])	)
-			return $result = $this->setAuthentication($_SESSION['username'], $_SESSION['password']);
+		if(isset($_SESSION['ausername']) && isset($_SESSION['apassword'])	)
+			return $result = $this->setAuthentication($_SESSION['ausername'], $_SESSION['apassword']);
 	
 		return false;
 	}
 	
 	public function removeAuthentication()
 	{
-		unset($_SESSION['username']);
-		unset($_SESSION['password']);
+		unset($_SESSION['ausername']);
+		unset($_SESSION['apassword']);
 		unset($_SESSION['firstname']);
 		unset($_SESSION['lastname']);
 		unset($_SESSION['email']);
