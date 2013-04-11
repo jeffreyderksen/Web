@@ -33,7 +33,7 @@ class Login extends FrameWorkBackend
 		}
 		else
 		{
-			$this->error = '<img class="error-oops" src="images/oops.png" alt="error"></br> Oops, it looks like you have a bad memory..';
+			//$this->error = '<img class="error-oops" src="images/oops.png" alt="error"></br> Oops, it looks like you have a bad memory..';
 			return false;
 		}
 	}

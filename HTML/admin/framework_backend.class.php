@@ -137,7 +137,7 @@ class FrameWorkBackend
 				{
 					$content .= '<tr>';
 					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['member_id'] .'"><img src="images/icons/table_edit.png"/> Edit<a> <a href="?page='. $page .'&action=delete&row='. $result[$i]['member_id'] .'"><img src="images/icons/delete.png"/>Delete</a></td>';
-					$content .= '<td>'. ($i+1) .'</td><td>'. $this->getMenuTitle($result[$i]['member_uname']) .'</td>';
+					$content .= '<td>'. ($i+1) .'</td><td>'. $result[$i]['member_uname'] .'</td>';
 					$content .= '</tr>';
 				}
 				$content .= '</table>';
@@ -159,7 +159,7 @@ class FrameWorkBackend
 					$content .= '<td><a href="?page='. $page .'&action=load&row='. $result[$i]['admin_id'] .'"><img src="images/icons/table_edit.png"/> Edit</a> 
 								     <a href="?page='. $page .'&action=delete&row='. $result[$i]['admin_id'] .'"><img src="images/icons/delete.png"/>Delete</a></td>';
 					$content .= '<td>'. ($i+1) .'</td>
-							     <td>'. $this->getMenuTitle($result[$i]['admin_uname']) .'</td>
+							     <td>'. $result[$i]['admin_uname'] .'</td>
 							     <td>'. $result[$i]['admin_activity'] .'</td>';
 					$content .= '</tr>';
 				}
