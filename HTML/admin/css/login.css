@@ -11,7 +11,10 @@ body
 {
 	width: 222px;
 }
-
+img
+{
+	border: none;
+}
 /*LOGIN FORM*/
 .error
 {
@@ -56,28 +59,15 @@ body
 	width: 90px;
 	padding: 0;
 	margin: 5px 10px 0px 0px;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79bbff), color-stop(1, #0083c0) );
-	background:-moz-linear-gradient( center top, #79bbff 5%, #0083c0 100% );
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
 	border-radius:6px;
+	background-color:#0083c0;
 	border:1px solid #84bbf3;
 	display:inline-block;
 	color:#FFF;
-	font-family: arial;
 	font-size:14px;
 	font-weight:normal;
 	padding:5px 18px;
 	text-decoration:none;
-	text-shadow:1px 1px 0px #528ecc;
-}.submit:hover {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0083c0), color-stop(1, #79bbff) );
-	background:-moz-linear-gradient( center top, #0083c0 5%, #79bbff 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#0083c0', endColorstr='#79bbff');
-	background-color:#0083c0;
-}.submit:active {
-	position:relative;
-	top:1px;
 }
 #login .ww-link
 {
