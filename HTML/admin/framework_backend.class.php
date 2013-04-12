@@ -298,7 +298,7 @@ class FrameWorkBackend
 		{
 			case 'content' : return array('content_id', 'content_menu', 'content_title', 'content_text');
 			case 'member' : return array('member_id', 'member_fname', 'member_lname', 'member_uname', 'member_pass','member_email');
-			case 'admin_member' : return array('admin_id', 'admin_fname', 'admin_lname', 'admin_uname', 'admin_pass','admin_email');
+			case 'admin_member' : return array('admin_id', 'admin_fname', 'admin_lname', 'admin_uname', 'admin_pass','admin_email', 'admin_activity');
 		}
 	}
 	
