@@ -1,6 +1,7 @@
 html, body {
 	height: 100%;
 	width: 100%;
+	font-family:"ERAS ITC";
 }
 div{
 	overflow:hidden;
@@ -25,7 +26,6 @@ a{
 	min-height: 90%;
 	margin: auto;
 	padding: 2%;
-	font-family:"ERAS ITC";
 	font-size:100%;	
 	border: none;
 	border-top-left-radius: 2% 3%;
@@ -37,11 +37,11 @@ a{
 h1 {
 	color: #00a2e8;
 	text-shadow:
-       2px 2px 0 #000,
-     -2px -2px 0 #000,  
-      2px -2px 0 #000,
-      -2px 2px 0 #000,
-       2px 2px 0 #000;
+       1px 1px 0 #000,
+     -1px -1px 0 #000,  
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+       1px 1px 0 #000;
 }
 
 

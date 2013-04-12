@@ -87,7 +87,6 @@ else
 if($action == 'logout')
 {
 	$user->removeAuth();
-	
 }
 
 if($user->isAuth())
