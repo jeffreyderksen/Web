@@ -1,7 +1,7 @@
 html, body {
 	height: 100%;
 	width: 100%;
-	font-family:"ERAS ITC";
+	font-family: "ERAS ITC";
 }
 div{
 	overflow:hidden;
@@ -63,6 +63,7 @@ h1 {
 	background-color:#000000;
 	width:	95%;
 	margin: 1% auto 1% auto;
+	max-height: 80px;
 }
 #menulist {
 	list-style-type: none;
@@ -72,15 +73,12 @@ h1 {
 	height: 100%;
 	float:left;
 }
-#menulist li{
-	
-}
 #menulist a{
 	text-align:center;
 	font-size:1em;
 	padding: 1%;
 	margin: 0.5% 1%;
-	width:12.5%;
+	width: 95px;
 	float: left;
 	background-color: #00a2e8;
 	border: outset #00a2e8;
@@ -96,6 +94,7 @@ h1 {
 	max-height:100%;
 	color: #00a2e8;
 	float: right;
+	z-index: 10000;
 }
 #login table{
 	float: left;
@@ -103,7 +102,7 @@ h1 {
 #login p{
 	margin: 0 1%;
 }
-#login a{
+#login a, #login label{
 	color: #5dbce5;
 }
 #button{
