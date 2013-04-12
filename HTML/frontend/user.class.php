@@ -15,11 +15,8 @@ class User extends ContentPage{
 		$query = 'SELECT member_uname, member_pass FROM member WHERE member_uname=:member_uname';
 		
 		$login = $this->dbHandle->executeQuery($query,$param)->fetch();
-		echo '<pre>';
-		print_r($login);
-		echo '</pre>';
 		
-		if(empty($login))
+		if(!empty($login))
 		{
 			if($username == $login['member_uname'] && $password == $login['member_pass'])
 			{
