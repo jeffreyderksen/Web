@@ -37,22 +37,6 @@ if($page == 'register')
 	$htmlPage->setJScript('formvalidate.js', 'checkUsername.js');
 }
 
-if($action == 'register')
-{
-	$firstname = $htmlPage->getFormVariable('fname');
-	$lastname = $htmlPage->getFormVariable('lname');
-	$uname = $htmlPage->getFormVariable('uname');
-	$pword = sha1($htmlPage->getFormVariable('pword'));
-	$cpassword = sha1($htmlPage->getFormVariable('confirmpword'));
-	$email = $htmlPage->getFormVariable('email');
-	if($pword == $cpassword)
-	{
-		$htmlPage->addUser($firstname, $lastname, $uname, $pword, $email);
-	} else
-	{
-		echo 'Adding user did not work';
-	}
-}
 
 if($action == 'verifylogin')
 {
@@ -96,8 +80,22 @@ if($user->isAuth())
 	$htmlPage->setLogin('login');
 }
 
-
-
+if($action == 'register')
+{
+	$firstname = $htmlPage->getFormVariable('fname');
+	$lastname = $htmlPage->getFormVariable('lname');
+	$uname = $htmlPage->getFormVariable('uname');
+	$pword = sha1($htmlPage->getFormVariable('pword'));
+	$cpassword = sha1($htmlPage->getFormVariable('confirmpword'));
+	$email = $htmlPage->getFormVariable('email');
+	if($pword == $cpassword)
+	{
+		$htmlPage->addUser($firstname, $lastname, $uname, $pword, $email);
+	} else
+	{
+		echo 'Adding user did not work';
+	}
+}
 
 
 echo $htmlPage->render();

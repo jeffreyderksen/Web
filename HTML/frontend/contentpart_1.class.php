@@ -196,6 +196,7 @@ class ContentPage
 						VALUES(:fn,:ln,:un,:pw,:em)';
 			$this->dbHandle->executeQuery($query,$param)->fetchAll();
 			$this->content = $result;
+			
 			header('Refresh: 8; index.php');
 		} 
 		else 
