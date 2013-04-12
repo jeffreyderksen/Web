@@ -8,6 +8,7 @@ class ContentPage
 	private $content;
 	private $login;
 	private $page;
+	private $error;
 	
 	//header
 	private $title;
@@ -28,27 +29,46 @@ class ContentPage
 			echo '<p style="color: red">Error connecting to database.</p>';	
 	}
 	
+	public function setError($value)
+	{
+		$this->error = $value;
+	}
+	
 	public function setPage($value)
 	{
 		$this->page = $value;
 	}
 	
-	public function setMenu()
+	public function setMenu($value)
 	{
 		$query = 'SELECT content_menu FROM content';
 		$param = array();
 		$menu_items = $this->dbHandle->executeQuery($query, $param)->fetchAll();
-		
+			
 		$result = '';
 		
-		for($i = 0; $i < sizeof($menu_items); $i++)
-		{
+		if($value == 1)
+		{			
+			for($i = 0; $i < sizeof($menu_items); $i++)
+			{
 				$result .= '<li>';
 				$result .= '<a href="?page='. strtolower($menu_items[$i]['content_menu']). '">' . $this->getMenuTitle($menu_items[$i]['content_menu']) . '</a>';
 				$result .= '</li>';
-		}		
+			}			
+		} else if ($value == 2)
+		{
+			for($i = 0; $i < sizeof($menu_items); $i++)
+			{
+				if($menu_items[$i]['content_menu'] != 'register')
+				{
+					$result .= '<li>';
+					$result .= '<a href="?page='. strtolower($menu_items[$i]['content_menu']). '">' . $this->getMenuTitle($menu_items[$i]['content_menu']) . '</a>';
+					$result .= '</li>';
+				} 
+			}
+		}
 		
-		$this->menu = $result;
+		$this->menu = $result;		
 	}
 	
 	public function getMenuTitle($value)
@@ -67,7 +87,7 @@ class ContentPage
 											<label>Login:</label>
 										</td>
 										<td>
-											<input type="text" name="username"></input>
+											<input type="text" name="username"/>
 										</td>
 									</tr>
 									<tr>
@@ -75,13 +95,17 @@ class ContentPage
 											<label>Password:</label>
 										</td>
 										<td>
-											<input type="password" name="password"></input>
+											<input type="password" name="password"/>
 										</td>						
 									</tr>
+									<tr>
+										<td colspan=2><p class="error">'.$this->error.'</p></td>
+									</tr>
 								</table>
-								<input class="button" type="submit" name="loginbutton" value="Login"></input>
+								<input class="button" type="submit" name="loginbutton" value="Login"/>
 								<input type="hidden" name="action" value="login"/>
 								<input type="hidden" name="action" value="verifylogin" />
+								<input type="hidden" name="page" value="'.$this->page.'"/>
 							</form>';
 				$this->login = $result;
 			} else {
@@ -93,7 +117,9 @@ class ContentPage
 	
 	public function setLoginPage()
 	{
-		$result = '<div class=formdiv><h2>For viewing this page you need to be a registered member and logged in to the site</h2><form method="post" action="index.php">					
+		$result = '<div class=formdiv>
+					<h2>For viewing this page you need to be a registered member and logged in to the site</h2>
+					<form method="post" action="index.php">					
 					<table>
 						<tr>
 							<td>
@@ -111,11 +137,16 @@ class ContentPage
 								<input type="password" name="password"/>
 							</td>						
 						</tr>
+						<tr>
+							<td colspan=2><p class="error">'.$this->error.'</p></td>
+						</tr>
 					</table>
 					<input class="button" type="submit" name="loginbutton" value="Login"/>
 					<input type="hidden" name="action" value="login"/>
 					<input type="hidden" name="action" value="verifylogin" />
-				</form></div>';
+					<input type="hidden" name="page" value="'.$this->page.'"/>					
+				</form>	
+			</div>';
 		$this->content = $result;
 	}
 	

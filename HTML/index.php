@@ -8,6 +8,7 @@ $htmlPage = new ContentPage;
 $user = new User();
 
 $page = $htmlPage->getFormVariable('page');
+$htmlPage->setPage($page);
 
 if(empty($page))
 {
@@ -15,7 +16,14 @@ if(empty($page))
 }
 
 $htmlPage->setCss('../css/style.css');
-$htmlPage->setMenu();
+
+
+if($user->isAuth()){
+	$htmlPage->setMenu(2);
+} else {
+	$htmlPage->setMenu(1);
+}	
+
 
 $action = $htmlPage->getFormVariable('action');
 
@@ -23,23 +31,6 @@ if(isset($_GET['un']))
 {
 	echo 'test';
 }	
-
-if($page == 'high_scores')
-{
-	if($user->isAuth())
-	{
-		$htmlPage->setContent($page);
-		$htmlPage->setTitle($page);
-	} else {
-		$htmlPage->setLoginPage();
-		$htmlPage->setTitle($page);
-	}
-} 
-else 
-{
-	$htmlPage->setTitle($page);
-	$htmlPage->setContent($page);
-}
 
 if($page == 'register')
 {
@@ -70,12 +61,33 @@ if($action == 'verifylogin')
 	$user->setAuth($username, sha1($password));
 	
 	if( !$user->setAuth($username, sha1($password)) )
-		$errorMessage = 'Geen juiste gegevens ingevuld';
+	{
+		$errorMessage = 'Username/Password is incorrect';
+		$htmlPage->setError($errorMessage);
+	}
+}
+
+if($page == 'high_scores')
+{
+	if($user->isAuth())
+	{
+		$htmlPage->setContent($page);
+		$htmlPage->setTitle($page);
+	} else {
+		$htmlPage->setLoginPage();
+		$htmlPage->setTitle($page);
+	}
+}
+else
+{
+	$htmlPage->setTitle($page);
+	$htmlPage->setContent($page);
 }
 
 if($action == 'logout')
 {
 	$user->removeAuth();
+	
 }
 
 if($user->isAuth())

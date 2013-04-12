@@ -11,6 +11,13 @@ a{
 	font-weight: bold;
 }
 
+/*These are the settings for the error messages for the forms*/
+.error {
+	color: red;
+	font-size: 80%;
+	font-style: italic;
+}
+
 /*This is the entire field of the site*/
 #container {
 	background-color:#5e6cd4;
@@ -36,6 +43,8 @@ h1 {
       -2px 2px 0 #000,
        2px 2px 0 #000;
 }
+
+
 
 /*This is the layout for the header*/
 #header {
@@ -146,11 +155,6 @@ h1 {
 .formdiv .button {
 	margin: 2%;
 }
-/*This are the settings for the error messages for the forms*/
-.error {
-	color: red;
-}
-
 
 /*This is the layout for the categorie page*/
 #games {
