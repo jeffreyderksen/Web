@@ -6,7 +6,7 @@ src: url(ERASDEMI.TTF);
 html, body {
 	height: 100%;
 	width: 100%;
-	font-family: "ERAS ITC";
+	font-family: myFont, sans-serif;
 
 }
 div{
@@ -84,7 +84,7 @@ h1 {
 	font-size:1em;
 	padding: 1%;
 	margin: 0.5% 1%;
-	width: 95px;
+	width: 100px;
 	float: left;
 	background-color: #00a2e8;
 	border: outset #00a2e8;
