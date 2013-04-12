@@ -183,7 +183,7 @@ class ContentPage
 	{
 		$param = array(':un' => $un);
 		$query = 'SELECT member_uname FROM member WHERE member_uname=:un';
-		$check = $this->dbHandle->executeQuery($query,$param)->fetchAll();
+		$check = $this->dbHandle->executeQuery($query,$param)->fetch();
 		if(empty($check))
 		{
 			$result = 	'<div class=formdiv><h2>Thank you for creating an account on our site. </h2>
