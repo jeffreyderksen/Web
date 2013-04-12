@@ -11,15 +11,11 @@ echo '<p style="color: red">Error connecting to database.</p>';
 	$param = array(':un' => $un);
 	$query = 'SELECT member_uname FROM member WHERE member_uname=:un';
 	$check = $db->executeQuery($query,$param)->fetch();
-	if(!empty($check))
-	{
-		if($check['member_uname'] == '')
+	if(empty($check))
 		{
 			echo 'This username is available for use';
 		} else 
 		{
 			echo 'This username is already in use';
-		}
-	}
-	
+		}	
 ?>
