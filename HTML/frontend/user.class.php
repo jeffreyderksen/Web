@@ -2,7 +2,8 @@
 include_once ('../HTML/frontend/contentpart_1.class.php');
 
 class User extends ContentPage{
-
+	
+	// Kijkt of de inloggegevens juist zijn en maakt een sessie aan
 	public function setAuth($username, $password)
 	{
 		if(strlen($password) != 40)
@@ -30,6 +31,7 @@ class User extends ContentPage{
 		return $result;
 	}
 	
+	// Kijkt of er een sessie loopt en kijkt of de inloggegevens kloppen
 	public function isAuth()
 	{
 		$result = false;
@@ -42,6 +44,7 @@ class User extends ContentPage{
 		return $result;
 	}
 	
+	// Verwijdert de sessies
 	public function removeAuth()
 	{
 		unset($_SESSION['username']);
