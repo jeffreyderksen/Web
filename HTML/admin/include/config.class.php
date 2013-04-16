@@ -1,6 +1,10 @@
 <?php
 include_once('../include/database_handler.class.php');
 
+/* Deze klas vraagt alle standaard instellingen van de website op uit de database zoals:
+ * META tags, css, script enz..
+ */
+
 class Config
 {
 	private $config;
@@ -22,16 +26,25 @@ class Config
 			echo '<p style="color:red">Error could not load default page settings.</p>';
 	}
 	
+	/**
+	 * @return stuurt een string terug die de charset bevat(UTF-8 ...)
+	 */
 	public function getCharset()
 	{
 		return $this->config['config_metacharset'];
 	}
 	
+	/**
+	 * @return stuurt een string terug die de auteur(s) bevat
+	 */
 	public function getAuthor()
 	{
 		return $this->config['config_author'];
 	}
 	
+	/**
+	 * @return stuurt een string terug naar de locatie van de CSS-file.
+	 */
 	public function getCssFile()
 	{
 		return $this->config['config_css'];

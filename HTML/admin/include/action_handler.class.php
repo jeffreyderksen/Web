@@ -2,8 +2,17 @@
 include_once('../include/database_handler.class.php');
 include_once('framework_backend.class.php');
 
+/* Deze klas behandeld alle actie's die de administrator uitvoert op het backend van de website. */
+
 class ActionHandler extends FrameWorkBackend
 {
+	/**
+	 * Deze functie update rows in de databases.
+	 * 
+	 * @param $page - de pagina waar de actie uitgevoerd wordt.
+	 * @param $id - het ID van de row die bewerkt word.
+	 * @return boolean true or false. Uitgaande of de query succesvol uitgevoerd wordt of niet.
+	 */
 	public function updateRow($page, $id)
 	{
 		if(empty($id))
@@ -34,6 +43,12 @@ class ActionHandler extends FrameWorkBackend
 			return false;
 	}
 	
+	/**
+	 * Deze functie maakt nieuwe rows aan in de tabellen van databases.
+	 * 
+	 * @param $id - het ID van de row die bewerkt word.
+	 * @return boolean true or false. Uitgaande of de query succesvol uitgevoerd wordt of niet.
+	 */
 	public function newRow($page)
 	{
 		$tabel = $this->getTabel($page);
@@ -69,6 +84,13 @@ class ActionHandler extends FrameWorkBackend
 			return false;
 	}
 	
+	/**
+	 * Deze functie delete rows uit een tabel van de database.
+	 * 
+	 * @param $page - de pagina waar de actie uitgevoerd wordt.
+	 * @param $id - het ID van de row die bewerkt word.
+	 * @return boolean true or false. Uitgaande of de query succesvol uitgevoerd wordt of niet.
+	 */
 	public function deleteRow($page, $id)
 	{
 		if(empty($id))
@@ -97,7 +119,12 @@ class ActionHandler extends FrameWorkBackend
 			return false;
 	}
 	
-	public function getTabel($page)
+	/**
+	 * Deze functie returned een tabelnaam doormiddel van de 'page' variabele.
+	 * @param $page - de pagina waar de actie uitgevoerd wordt.
+	 * @return string - tabelnaam
+	 */
+	private function getTabel($page)
 	{
 		switch($page)
 		{
@@ -107,7 +134,13 @@ class ActionHandler extends FrameWorkBackend
 		}
 	}
 	
-	public function getColumns($tabel)
+	/**
+	 * Deze functie returned een array met de kolomnamen van de tabel.
+	 * 
+	 * @param $tabel - tabelnaam
+	 * @return array - kolom namen
+	 */
+	private function getColumns($tabel)
 	{
 		switch($tabel)
 		{
@@ -117,7 +150,13 @@ class ActionHandler extends FrameWorkBackend
 		}
 	}
 	
-	public function getParamArray($page)
+	/**
+	 * Deze functie returned een array met klaargezette keys(kolomnamen) voor het binden van variablen aan de 'prepared' query.
+	 * 
+	 * @param $page - de pagina waar de actie uitgevoerd wordt.
+	 * @return array - array met kolomnamen keys.
+	 */
+	private function getParamArray($page)
 	{
 		switch($page)
 		{
@@ -127,6 +166,14 @@ class ActionHandler extends FrameWorkBackend
 		}
 	}
 	
+	/**
+	 * Deze functie returned een string die in de query wordt gezet. 
+	 * Bijvoorbeeld: "SELECT id,text,datum,.....".
+	 * @param $columns - kolomnamen array
+	 * @param $primarykey - true voor het meenemen van het ID in de string. False voor niet.
+	 * 
+	 * @return string - kolom string voor in de query
+	 */
 	private function getColumnsString($columns, $primarykey)
 	{
 		$columnsString = '';
@@ -146,6 +193,13 @@ class ActionHandler extends FrameWorkBackend
 		return $columnsString;
 	}
 	
+	/**
+	 * Deze functie bouwt een value string die in de query wordt gezet.
+	 * 
+	 * Bijvoorbeeld: ":content_menu, :content_title...".
+	 * @param $array - kolom namen
+	 * @return string - value string
+	 */
 	private function getValuesString($array)
 	{
 		$values = '';
@@ -159,25 +213,15 @@ class ActionHandler extends FrameWorkBackend
 		return $values;
 	}
 	
-	private function getUpdateValues($columns)
-	{
-		$valuesString = '';
-		
-		for($i = 1; $i < count($columns); $i++)
-		{
-			$value = $this->getFormVariable($columns[$i]);
-			$valuesString .= $value;
-			
-			if($i != count($columns)-1)
-				$valuesString .= ',';
-		}
-
-		return $valuesString;
-	}
-	
+	/**
+	 * Deze functie bouwt een update string voor 'UPDATE' query's.
+	 * 
+	 * @param array - $columns
+	 * @return columnstring
+	 */
 	private function getUpdateString($columns)
 	{
-		//UPDATE table_name SET column1=value, column2=value2,...
+		//UPDATE table_name SET column1=:column1, column2=:column2,...
 		$queryString = '';
 		
 		for($i = 1; $i < count($columns); $i++)
@@ -192,6 +236,13 @@ class ActionHandler extends FrameWorkBackend
 		return $queryString;
 	}
 	
+	/**
+	 * Deze functie vult een array die keys bevat met values.
+	 * 
+	 * @param $keysArray - array met keys(kolom namen)
+	 * @param $columns - array met kolom namen
+	 * @return array met keys die values bevat
+	 */
 	private function getUpdateParam($keysArray, $columns)
 	{
 		$keys = array_keys($keysArray);

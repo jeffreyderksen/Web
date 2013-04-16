@@ -1,4 +1,7 @@
 <?php
+/* Dit php-script checkt of de pagina die de administrator toe wilt voegen al bestaat
+ * door true of false terug te sturen naar AJAX.
+*/
 include_once('../../include/database_handler.class.php');
 
 $db = new DatabaseHandler();

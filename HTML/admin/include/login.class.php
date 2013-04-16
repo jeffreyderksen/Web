@@ -6,6 +6,12 @@ class Login extends FrameWorkBackend
 {
 	public $error;
 	
+	/**
+	 * Functie die het login en logout proces behandeld en checkt voordurend voor authenticatie
+	 * 
+	 * @param $action - de actie de uitgevoerd moet worden(login of logout)
+	 * @return boolean - true of false uitgaande van ingelogd of niet ingelogd.
+	 */
 	public function processLogin($action)
 	{
 		if($action == 'verifylogin')
@@ -38,6 +44,14 @@ class Login extends FrameWorkBackend
 		}
 	}
 	
+	/**
+	 * Deze functie zet de authenticatie van de gebruiker in de SESSION variabele wanneer de gegevens die de gebruiker
+	 * ingevoerd heeft klopt. Dit controleert hij door de database te queryën om te kijken of de username of password klopt.
+	 * 
+	 * @param $username - ingevoerd username
+	 * @param $password - ingevoerd password
+	 * @return boolean - true als er authenticatie is gemaakt, anders false
+	 */
 	public function setAuthentication($username, $password)
 	{			
 		//SHA1 versleuteling
@@ -82,6 +96,12 @@ class Login extends FrameWorkBackend
 		return false;
 	}
 	
+	/**
+	 * Controleert of de user authenticated is door de SESSION variabelen mee te geven aan de setAuthentication functie.
+	 * Deze controleert vervolgens of de gegevens (nog) kloppen. Als er geen SESSION variabelen bestaan returned hij false.
+	 * 
+	 * @return boolean - true als er authenticatie is gemaakt, anders false
+	 */
 	public function isAuthenticated()
 	{	
 		//check session
@@ -91,6 +111,9 @@ class Login extends FrameWorkBackend
 		return false;
 	}
 	
+	/**
+	 * Haalt alle SESSION variabele weg wanneer de gebruiker uitlogt.
+	 */
 	public function removeAuthentication()
 	{
 		unset($_SESSION['ausername']);

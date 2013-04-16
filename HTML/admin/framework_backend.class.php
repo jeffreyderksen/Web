@@ -30,7 +30,12 @@ class FrameWorkBackend
 			echo '<p style="color: red">Error connecting to database.</p>';
 	}
 	
-	//Laad alle page settings(behalve het menu)
+	/**
+	 * Laad alle page settings(zoals header, footer, content en title).
+	 * 
+	 * @param $page - de pagina waar de gebruiker zich bevind
+	 * @return - true als de pagina succesvol geladen is. Anders een error.
+	 */
 	public function loadPage($page)
 	{
 		if($page != 'edit')
@@ -56,13 +61,16 @@ class FrameWorkBackend
 		}
 	}
 	
-	/* DISPLAY SUCCES OR ERROR MESSAGE */
+	/**
+	 * Voegt tekst toe aan de div 'message' in de html pagina.
+	 * @param $value - tekst
+	 */
 	public function setMessage($value)
 	{
 		$this->message = $value;
 	}
 	
-	/*DEFAULT PAGE SETTINGS */
+	/* DEFAULT PAGE SETTINGS */
 	public function setCharset($value)
 	{
 		$this->charset = $value;
@@ -97,10 +105,10 @@ class FrameWorkBackend
 		$content = '<div id="content-page">';
 		
 		$page = $this->page['page_menu'];
-		//check voor statische tekst in database
+		//check of de variable [page_text] leeg is..
 		if(empty($this->page[$value]))
 		{
-			//laad frontend CONTENT
+			//Manage pages - frontend CONTENT tabel
 			if($this->page['page_menu'] == 'manage_pages')
 			{
 				$content .= '<h3>Current pages</h3>
@@ -110,7 +118,7 @@ class FrameWorkBackend
 				$query = 'SELECT content_id,content_menu FROM content';
 				$result = $this->databaseHandler->executeQuery($query)->fetchAll();
 									
-				//table weergeven met alle pages
+				//table
 				$content .= '<table>';
 				$content .= '<tr><th>Settings</th><th>#</th><th>Page menu-item</th></tr>';
 				for($i = 0; $i < count($result); $i++)
@@ -122,7 +130,7 @@ class FrameWorkBackend
 				}
 				$content .= '</table>';
 			}
-			//laad frontend USERS
+			//Manage members- frontend MEMBERS tabel
 			else if($this->page['page_menu'] == 'manage_members')
 			{
 				$content .= '<h3>Members</h3><a href="?page='. $page .'&action=new"><img src="images/icons/add.png"/> New member</a>';
@@ -130,7 +138,7 @@ class FrameWorkBackend
 				$query = 'SELECT member_id, member_uname FROM member';
 				$result = $this->databaseHandler->executeQuery($query)->fetchAll();
 									
-				//table weergeven met alle pages
+				//table
 				$content .= '<table>';
 				$content .= '<tr><th>Settings</th><th>#</th><th>User</th></tr>';
 				for($i = 0; $i < count($result); $i++)
@@ -142,7 +150,7 @@ class FrameWorkBackend
 				}
 				$content .= '</table>';
 			}
-			//laad ADMIN USERS
+			//Manage admins - backend ADMIN_MEMBER tabel
 			else if($this->page['page_menu'] == 'manage_admins')
 			{
 				$content .= '<h3>Administrators</h3><a href="?page='. $page .'&action=new"><img src="images/icons/add.png"/> New admin</a>';
@@ -150,7 +158,7 @@ class FrameWorkBackend
 				$query = 'SELECT admin_id, admin_uname,admin_activity FROM admin_member';
 				$result = $this->databaseHandler->executeQuery($query)->fetchAll();
 									
-				//table weergeven met alle pages
+				//table
 				$content .= '<table>';
 				$content .= '<tr><th>Settings</th><th>#</th><th>Username</th><th>Last activity</th></tr>';
 				for($i = 0; $i < count($result); $i++)
@@ -165,6 +173,7 @@ class FrameWorkBackend
 				}
 				$content .= '</table>';
 			}
+			//Logs - backend LOG tabel
 			else if($this->page['page_menu'] == 'logs')
 			{
 				$content .= '<h3>Logs</h3>';
@@ -172,7 +181,7 @@ class FrameWorkBackend
 				$query = 'SELECT * FROM admin_logs';
 				$result = $this->databaseHandler->executeQuery($query)->fetchAll();
 					
-				//table weergeven met alle pages
+				//table
 				$content .= '<table>';
 				$content .= '<tr><th>#</th><th>Action</th><th>Details</th><th>By</th></tr>';
 				for($i = 0; $i < count($result); $i++)
@@ -187,6 +196,7 @@ class FrameWorkBackend
 				$content .= '</table>';
 			}
 		}
+		//[page_text] is gedefineerd, dus tekst in de database.
 		else
 		{
 			$content .= $this->page['page_text'];
@@ -220,17 +230,24 @@ class FrameWorkBackend
 		return $value = ucfirst(str_replace(array('_'), array(' ',), $value));
 	}
 	
+	/**
+	 * Deze functie behandeld alle acties die de administrator uitvoert op het backend.
+	 * @param $page - pagina waarvandaan genavigeert word
+	 * @param $action - de actie
+	 */
 	public function handleAction($page, $action)
 	{
 		$actionHandler = new ActionHandler();
 		
 		switch($action)
 		{
+			//edit-page
 			case 'new': 
 			{
 				$this->content .= $this->displayEditPage($page, $action); break;
 				
 			}
+			//edit-page
 			case 'load':
 			{
 				$row = $this->getFormVariable('row');
@@ -266,7 +283,11 @@ class FrameWorkBackend
 		}
 	}
 	
-	//get form variable GET or POST
+	/**
+	 * Haalt een form variable op(GET of POST)
+	 * 
+	 * @return value met de data.
+	 */
 	public function getFormVariable($value)
 	{
 		if($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET[$value]))
@@ -283,6 +304,11 @@ class FrameWorkBackend
 		}
 	}
 	
+	/**
+	 * Stuurt de tabel terug via de 'page' variabele.
+	 * @param $page - de pagina waarvandaan genavigeert word.
+	 * @return string - tabelnaam
+	 */
 	private function getTabel($page)
 	{
 		switch($page)
@@ -292,6 +318,11 @@ class FrameWorkBackend
 			case 'manage_admins' : return 'admin_member';
 		}
 	}
+	/**
+	 * Vraagt de kolom namen op van een tabel doormiddel van de tabelnaam.
+	 * @param $tabel - tabelnaam
+	 * @return array - kolom namen
+	 */
 	private function getColumns($tabel)
 	{
 		switch($tabel)
@@ -302,6 +333,7 @@ class FrameWorkBackend
 		}
 	}
 	
+	//Dit is de edit pagina die de gebruiker ziet wanneer er op 'New' of 'Edit' geklikt wordt.
 	public function displayEditPage($page, $action, $row=null)
 	{
 		$tabel = $this->getTabel($page);
